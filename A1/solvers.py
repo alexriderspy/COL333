@@ -12,4 +12,9 @@ class SentenceCorrector(object):
         """
         # You should keep updating self.best_state with best string so far.
         # self.best_state = start_state
-        raise Exception("Not Implemented.")
+        cost = self.cost_fn(start_state)
+        end_state = 'the company said president and chief executive officer morris moliver had been chief operating officer as well'
+        print(cost)
+        cost = self.cost_fn(end_state)
+        print(cost)
+        self.best_state = end_state
