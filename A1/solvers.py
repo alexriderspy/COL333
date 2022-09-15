@@ -3,7 +3,6 @@ class SentenceCorrector(object):
     def __init__(self, cost_fn, conf_matrix):
         self.conf_matrix = conf_matrix
         self.cost_fn = cost_fn
-
         # You should keep updating following variable with best string so far.
         self.best_state = None  
 
@@ -31,6 +30,7 @@ class SentenceCorrector(object):
                 self.min_cost = cost
             self.dfs(st,index+1)
             st[index]=prev_ch
+        return
 
     def search(self, start_state):
         """
