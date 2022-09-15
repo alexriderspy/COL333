@@ -7,6 +7,9 @@ class SentenceCorrector(object):
         self.cost_fn = cost_fn
         # You should keep updating following variable with best string so far.
         self.best_state = None  
+        self.check = {}
+        for letter in string.ascii_lowercase:
+            self.check[letter] = -1
 
     def get_corr_chars(self,ch):
         lis = []
@@ -20,9 +23,14 @@ class SentenceCorrector(object):
     def dfs(self,st,index):
         if index == len(st):
             return
-        possible_correct_chars = self.get_corr_chars(st[index])
         if(st[index]==' '):
             self.dfs(st,index+1)
+            return
+        if self.check[st(index)] !=-1:
+            possible_correct_chars = self.check[index]
+        else:
+            possible_correct_chars = self.get_corr_chars(st[index])
+            self.check[st(index)] = possible_correct_chars
         for ch in possible_correct_chars:
             prev_ch = st[index]
             st[index] = ch
