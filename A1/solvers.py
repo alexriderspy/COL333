@@ -16,20 +16,20 @@ class SentenceCorrector(object):
                     break
         return lis
 
-    def dfs(self,st,index,min_cost):
+    def dfs(self,st,index):
         if index == len(st):
             return
         possible_correct_chars = self.get_corr_chars(st[index])
         if(st[index]==' '):
-            self.dfs(st,index+1,min_cost)
+            self.dfs(st,index+1)
         for ch in possible_correct_chars:
             prev_ch = st[index]
             st[index] = ch
             cost = self.cost_fn(''.join(st))
-            if cost < min_cost:
+            if cost < self.min_cost:
                 self.best_state = ''.join(st)
-                min_cost = cost
-                self.dfs(st,index+1,min_cost)
+                self.min_cost = cost
+            self.dfs(st,index+1)
             st[index]=prev_ch
 
     def search(self, start_state):
@@ -39,6 +39,8 @@ class SentenceCorrector(object):
         # You should keep updating self.best_state with best string so far.
         # self.best_state = start_state
         self.best_state = start_state
+        self.min_cost = 10000000000
         cost = self.cost_fn(start_state)
         lis = list(start_state)
-        self.dfs(lis,0,10000)
+        self.dfs(lis,0)
+        print(self.min_cost)
