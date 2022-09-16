@@ -1,6 +1,5 @@
-# stochastic hill climbing
+import string,random
 
-import string
 class SentenceCorrector(object):
     def __init__(self, cost_fn, conf_matrix):
         self.conf_matrix = conf_matrix
@@ -54,8 +53,13 @@ class SentenceCorrector(object):
 
         state = ' '.join(stateList)
         self.best_state = state
-        for l in range(1,len(stateList)):        
-            for i in range(len(stateList)-l):
+
+        lis = [i for i in range(1,len(stateList))]
+        random.shuffle(lis)
+        for l in lis:
+            tmp_lis = [i for i in range(len(stateList)-l)]
+            random.shuffle(tmp_lis)        
+            for i in tmp_lis:
                 slc = stateList[i:i+l+1]
                 state = ' '.join(slc)
                 state = self.partition(state)
@@ -65,17 +69,6 @@ class SentenceCorrector(object):
             state = ' '.join(stateList)
             self.best_state = state
         
-        for l in range(len(stateList),1,-1):        
-            for i in range(len(stateList)-l):
-                slc = stateList[i:i+l+1]
-                state = ' '.join(slc)
-                state = self.partition(state)
-                lis = state.split(' ')
-                for li in range(len(lis)):
-                    stateList[i+li] = lis[li]
-            state = ' '.join(stateList)
-            self.best_state = state
-
         print(self.cost_fn(state))
         
     
