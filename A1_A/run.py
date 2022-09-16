@@ -2,7 +2,7 @@ import json
 import pickle
 import argparse
 import utils
-from solvers import SentenceCorrector
+from solvers_3 import SentenceCorrector
 
 
 def read_cli():
@@ -74,6 +74,8 @@ def run_sentence_correction():
 
     preds = []
     for line in lines:
+    #for i in range(1):
+        #line = lines[0]
         sol = SentenceCorrector(lm_model, conf_matrix)
         try:
             utils.run_solver_with_timeout(sol, line, time_out)
