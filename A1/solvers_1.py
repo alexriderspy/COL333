@@ -1,5 +1,6 @@
 # stochastic hill climbing
 
+from os import stat
 import string
 class SentenceCorrector(object):
     def __init__(self, cost_fn, conf_matrix):
@@ -10,6 +11,7 @@ class SentenceCorrector(object):
         self.check = {}
         for letter in string.ascii_lowercase:
             self.check[letter] = -1
+        self.BIG_WORD = 6
 
     def get_corr_chars(self,ch):
         lis = []
@@ -20,35 +22,32 @@ class SentenceCorrector(object):
                     break
         return lis
 
-    def dfs(self,st,index):
-        if index == len(st):
-            return
-        if(st[index]==' '):
-            self.dfs(st,index+1)
-            return
-        if self.check[st[index]] !=-1:
-            possible_correct_chars = self.check[st[index]]
-        else:
-            possible_correct_chars = self.get_corr_chars(st[index])
-            self.check[st[index]] = possible_correct_chars
+    def one_word(self,state):
+        #at most 1 letter in a word
+        stateList = list(state)
+        init_cost = self.cost_fn(state)
+        for j in range(len(stateList)):
+            if self.check[stateList[j]] !=-1:
+                possible_correct_chars = self.check[stateList[j]]
+            else:
+                possible_correct_chars = self.get_corr_chars(stateList[j])
+                self.check[stateList[j]] = possible_correct_chars
+            init_ch = stateList[j]
+            for i in range(len(possible_correct_chars)):
+                stateList[j] = possible_correct_chars[i]
+                cost = self.cost_fn(''.join(stateList))
+                if cost <= init_cost:
+                    return ''.join(stateList)
+            stateList[j]=init_ch
+        return state
+    
+    def spell_check_large_words(self,state):
+        stateList = state.split(' ')
+        for i in range(len(stateList)):
+            if len(stateList[i]) >= self.BIG_WORD:
+                stateList[i] = self.one_word(stateList[i])
         
-        cost = self.cost_fn(''.join(st))
-        if cost <= self.min_cost*2:
-            self.best_state = ''.join(st)
-            if cost <= self.min_cost:
-                self.min_cost = cost
-            self.dfs(st,index+1)
-        for ch in possible_correct_chars:
-            prev_ch = st[index]
-            st[index] = ch
-            cost = self.cost_fn(''.join(st))
-            if cost <= self.min_cost*2:
-                self.best_state = ''.join(st)
-                if cost <= self.min_cost:
-                    self.min_cost = cost
-                self.dfs(st,index+1)
-            st[index]=prev_ch
-        return
+        print(self.cost_fn(''.join(stateList)))
 
     def search(self, start_state):
         """
@@ -59,8 +58,4 @@ class SentenceCorrector(object):
         self.best_state = start_state
         cost = self.cost_fn(start_state)
         print(cost)
-        lis = list(start_state)
-        self.min_cost = cost
-        self.dfs(lis,0)
-        
-        print(self.min_cost)
+        self.spell_check_large_words(start_state)
