@@ -1,0 +1,2 @@
+1) order the confusion matrix so that we get the most likely letter on top
+2) at most 1 letter in every word/set of words

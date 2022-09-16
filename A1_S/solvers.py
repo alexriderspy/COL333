@@ -9,7 +9,7 @@ class SentenceCorrector(object):
         self.check = {}
         for letter in string.ascii_lowercase:
             self.check[letter] = -1
-        self.BIG_WORD = 9
+        self.BIG_WORD = 8
 
     def get_corr_chars(self,ch):
         lis = []
@@ -45,9 +45,10 @@ class SentenceCorrector(object):
 
     def spell_check_large_words(self,state):
         stateList = state.split(' ')
-
+        
         min_cost = self.cost_fn(state)
-        for x in range(2):
+
+        for _ in range(2):
             for i in range(len(stateList)):
                 if len(stateList[i]) >= self.BIG_WORD:
                     stateList[i] = self.partition(stateList[i])
@@ -60,27 +61,26 @@ class SentenceCorrector(object):
             self.best_state = state
             min_cost = cost
         
-        while True:
-            lis = [i for i in range(1,len(stateList))]
-            random.shuffle(lis)
-            for l in lis:
-                tmp_lis = [i for i in range(len(stateList)-l)]
-                random.shuffle(tmp_lis)        
-                for i in tmp_lis:
-                    slc = stateList[i:i+l+1]
-                    state = ' '.join(slc)
-                    state = self.partition(state)
-                    lis = state.split(' ')
-                    for li in range(len(lis)):
-                        stateList[i+li] = lis[li]
-                state = ' '.join(stateList)
-                cost = self.cost_fn(state)
+        lis = [i for i in range(1,len(stateList))]
+        random.shuffle(lis)
+        for l in lis:
+            tmp_lis = [i for i in range(len(stateList)-l)]
+            random.shuffle(tmp_lis)        
+            for i in tmp_lis:
+                slc = stateList[i:i+l+1]
+                state = ' '.join(slc)
+                state = self.partition(state)
+                lis = state.split(' ')
+                for li in range(len(lis)):
+                    stateList[i+li] = lis[li]
+            state = ' '.join(stateList)
+            cost = self.cost_fn(state)
 
-                if cost <= min_cost:
-                    self.best_state = state
-                    min_cost = cost
-            
-            print(min_cost)
+            if cost <= min_cost:
+                self.best_state = state
+                min_cost = cost
+        
+        print(min_cost)
         
     
     def search(self, start_state):
