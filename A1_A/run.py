@@ -2,7 +2,7 @@ import json
 import pickle
 import argparse
 import utils
-from solvers_4 import SentenceCorrector
+from solvers import SentenceCorrector
 
 
 def read_cli():

@@ -20,11 +20,10 @@ class SentenceCorrector(object):
         mat = self.get_conf_matrix()
         return words, indices, weight, sentence, cost, mat
 
-    #The objective function in A*
+    #The objective function
     def fn(self, initial_cost, sentence, wt):
         cost = self.cost_fn(sentence)
-        f = cost*wt + initial_cost-cost
-        return f
+        return cost
 
     #Substitutes the letter in the sentence
     def get_sentence(self,i, sentence, letter):
@@ -137,6 +136,5 @@ class SentenceCorrector(object):
         depth = 1
         while True:
             for j in lis_words:
-                #self.best_state = self.iterative_deepening(words[j], indices[j], weight, cost_init, self.best_state, mat, depth)
                 self.best_state = self.find_best_word(words[j], indices[j], depth, weight, cost_init, mat, self.best_state)
             depth+=1 

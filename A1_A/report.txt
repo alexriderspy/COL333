@@ -1,0 +1,5 @@
+Name: Sreemanti Dey 2020CS10393 and Aryan Dua 2020CS50475
+
+Algorithm : 
+The algorithm works on the idea of iterative deepening but in the context of local search. We maintain a variable depth that indicates at most how many letters we shall change simultaneously while correcting a word. Thus, at each iteration, we keep increasing the number of letters to be checked simultaneously. 
+This is based on the common statistics of the average number of characters present in a word (4.7 ~ 5) and the average number of mistakes in each word made by an OCR. 1 mistake is most common, then 2 mistakes and so on, and the probability of the OCR making x mistakes decreases sharply as x increases since beyond 4-5 mistakes we won't be able to understand the word that was being mis translated. 
