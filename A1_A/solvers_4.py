@@ -76,7 +76,7 @@ class SentenceCorrector(object):
         return better1, better2, min
 
     #Finds the best letter to change in a word
-    def find_best_word(self, word, offset, weight, cost_init, sentence, mat):
+    def find_best_word(self, word, offset, weight, cost_init, sentence, mat, ch):
         for j in range(len(word)):
             min = 1000000000
             letter = ''
@@ -92,6 +92,10 @@ class SentenceCorrector(object):
             else:
                 break
 
+        #to ensure partial accuracy
+        if ch == 0:
+            return sentence
+        
         for j in range(len(word)):
             min = 1000000000
             letter1 = ''
@@ -136,5 +140,9 @@ class SentenceCorrector(object):
         lis_words = [a for a in range(len(words))]
         
         for j in lis_words:
-            self.best_state = self.find_best_word(words[j], indices[j], weight, cost_init, self.best_state, mat)
+            self.best_state = self.find_best_word(words[j], indices[j], weight, cost_init, self.best_state, mat, 0)
+        
+        for j in lis_words:
+            self.best_state = self.find_best_word(words[j], indices[j], weight, cost_init, self.best_state, mat, 1)
+
         
