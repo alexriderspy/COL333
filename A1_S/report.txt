@@ -1,1 +1,0 @@
-1) simulated annealing - random neighbour with lower cost then go there, if no such neighbour then choose one with probability p max based on exp(-(E-E_i)/T), not to get stuck on local minima but go to global minima
