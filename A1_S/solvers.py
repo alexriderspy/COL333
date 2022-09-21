@@ -48,12 +48,10 @@ class SentenceCorrector(object):
         
         min_cost = self.cost_fn(state)
 
-        for _ in range(2):
-            for i in range(len(stateList)):
-                if len(stateList[i]) >= self.BIG_WORD:
-                    stateList[i] = self.partition(stateList[i])
+        # for i in range(len(stateList)):
+        #     if len(stateList[i]) >= self.BIG_WORD:
+        #         stateList[i] = self.partition(stateList[i])
 
-        
         state = ' '.join(stateList)
         cost = self.cost_fn(state)
 
