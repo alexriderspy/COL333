@@ -1,4 +1,5 @@
 import random
+import itertools
 
 class SentenceCorrector(object):
     def __init__(self, cost_fn, conf_matrix):
@@ -29,95 +30,90 @@ class SentenceCorrector(object):
     #Substitutes the letter in the sentence
     def get_sentence(self,i, sentence, letter):
         return sentence[:i] + letter + sentence[i+1:]
-    
-    #Finds the best alternative for a letter at a given index
-    def find_best_letter(self, current_letter, original_sentence ,index, wt, initial_cost, mat):
-        better = current_letter
-        min = 10000000
-        to_substitute = []
-        original_letter = self.original_state[index]
-        l = mat[original_letter]
-        for elem in l:
-            to_substitute.append(elem)
-        to_substitute.append(original_letter)
 
-        for letter in to_substitute:
-            sentence = self.get_sentence(index, original_sentence, letter)
+    def get_letters(self, mat, indices, ch):
+        to_substitute = []
+        for i in range(ch):
+            to_substitute.append([])
+            l = mat[self.original_state[indices[i]]]
+            for elem in l:
+                to_substitute[i].append(elem)
+            to_substitute[i].append(self.original_state[indices[i]])
+        letters = itertools.product(*to_substitute)
+        return letters
+
+    def find_best_letters(self, current_letters, original_sentence ,indices, wt, initial_cost, mat, ch):
+        better = current_letters
+        min = 10000000
+        letters = self.get_letters(mat, indices, ch)
+        for vals in letters:
+            sentence = original_sentence
+            for j in range(ch):
+                sentence = self.get_sentence(indices[j], sentence, vals[j])
             f= self.fn(initial_cost, sentence, wt)
             if f<=min:
-                min, better = f, letter
-        return better, min
+                better, min = vals, f
+        return better , min
 
-    def find_2_best_letters(self, current_letter1, current_letter2, original_sentence ,index1, index2, wt, initial_cost, mat):
-        better1 = current_letter1
-        better2 = current_letter2
-        min = 10000000
-        to_substitute1 = []
-        original_letter1 = self.original_state[index1]
-        l = mat[original_letter1]
-        for elem in l:
-            to_substitute1.append(elem)
-        to_substitute1.append(original_letter1)
+    def diff_letter(self, ch, new_letters, word, index):
+        cond = False
+        for j in range(ch):
+            if new_letters[j]!=word[index[j]]:
+                cond = True
+                break
+        return cond
 
-        to_substitute2 = []
-        original_letter2 = self.original_state[index2]
-        l = mat[original_letter2]
-        for elem in l:
-            to_substitute2.append(elem)
-        to_substitute2.append(original_letter2)
+    def stop_loop(self, ch, letters):
+        cond = True
+        for j in range(ch):
+            if letters[0]!='':
+                cond = False
+                break
+        return cond
 
-        for letter1 in to_substitute1:
-            for letter2 in to_substitute2:
-                sentence = self.get_sentence(index1, original_sentence, letter1)
-                sentence = self.get_sentence(index2, sentence, letter2)
-                f= self.fn(initial_cost, sentence, wt)
-                if f<=min:
-                    min, better1,better2 = f, letter1,letter2
-        return better1, better2, min
+    def init(self,ch, word, offset):
+        test_list = []
+        for i in range(len(word)):
+            test_list.append(i)
+        indices = list(itertools.combinations(test_list, ch))
+        min = 1000000000
+        letters = []
+        positions = []
+        letters_to_send = []
+        positions_to_send = []
+        for i in range(ch):
+            letters.append('')
+            positions.append(offset)
+            letters_to_send.append("")
+            positions_to_send.append(0)
+        return indices, min, letters, positions, letters_to_send, positions_to_send
 
     #Finds the best letter to change in a word
-    def find_best_word(self, word, offset, weight, cost_init, sentence, mat, ch):
+    def find_best_word(self, word, offset, ch, weight, cost_init, mat, sentence):
         for j in range(len(word)):
-            min = 1000000000
-            letter = ''
-            position = offset
-            for i in range(len(word)):
-                new_letter, cost= self.find_best_letter(word[i], sentence ,offset+i, weight, cost_init, mat)
-                if new_letter!=word[i] and cost < min:
-                    min = cost
-                    letter = new_letter
-                    position = offset + i
-            if letter!='':
-                sentence = self.get_sentence(position, sentence, letter)
-            else:
-                break
+            indices, min, letters, positions, letters_to_send, positions_to_send = self.init(ch, word, offset)
+            for index in indices:
+                for j in range(ch):
+                    letters_to_send[j] = word[index[j]]
+                    positions_to_send[j] = offset + index[j]
 
-        #to ensure partial accuracy
-        if ch == 0:
-            return sentence
-        
-        for j in range(len(word)):
-            min = 1000000000
-            letter1 = ''
-            letter2 = ''
-            position1 = offset
-            position2 = offset
-            #find 2 letters such that they jointly reduce cost function
-            for i in range(len(word)):
-                for k in range(i+1,len(word)):
-                    new_letter1, new_letter2, cost= self.find_2_best_letters(word[i], word[k], sentence ,offset+i, offset+k,weight, cost_init, mat)
-                    if (new_letter1!=word[i] or new_letter2!=word[k]) and cost < min:
-                        min = cost
-                        letter1 = new_letter1
-                        letter2 = new_letter2
-                        position1 = offset + i
-                        position2 = offset + k
-            if letter1=='' and letter2=='':
-                break
-                
+                new_letters, cost= self.find_best_letters(letters_to_send, sentence ,positions_to_send ,weight, cost_init, mat, ch)
+                if self.diff_letter(ch, new_letters, word, index)==True and cost < min:
+                    min = cost
+                    letters = new_letters
+                    positions = [offset + position for position in index]
+
+            if self.stop_loop(ch, letters)==True:
+                break 
             else:
-                sentence = self.get_sentence(position1, sentence, letter1)
-                sentence = self.get_sentence(position2,sentence,letter2)
+                for i in range(ch):
+                    sentence = self.get_sentence(positions[i], sentence, letters[i])
+        return sentence
+
+    #carries out the series of steps
+    def iterative_deepening(self, word, offset, weight, cost_init, sentence, mat, ch):
+        for i in range(ch):
+            sentence = self.find_best_word(word, offset, i+1, weight, cost_init, mat, sentence)
         return sentence
 
     #converts the given conf matrix to the semantically opposite key value pairs
@@ -139,10 +135,8 @@ class SentenceCorrector(object):
         self.original_state = start_state
         lis_words = [a for a in range(len(words))]
         
-        for j in lis_words:
-            self.best_state = self.find_best_word(words[j], indices[j], weight, cost_init, self.best_state, mat, 0)
-        
-        for j in lis_words:
-            self.best_state = self.find_best_word(words[j], indices[j], weight, cost_init, self.best_state, mat, 1)
-
-        
+        depth = 1
+        while True:
+            for j in lis_words:
+                self.best_state = self.iterative_deepening(words[j], indices[j], weight, cost_init, self.best_state, mat, depth)
+            depth+=1 
