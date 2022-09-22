@@ -2,10 +2,22 @@ Assignment 1 (Done in pairs)
 
 Sreemanti Dey (2020CS10393) and Aryan Dua (2020CS50475)
 
-Algorithm : The algorithm works on the idea of iterative deepening but in the context of local search. We maintain a variable depth that indicates at most how many letters we shall change simultaneously while correcting a word. Thus, at each iteration, we keep increasing the number of letters to be checked simultaneously. At depth = 1, we change one letter and see what is the maximum accuracy achievable by this (by computing the max decrease in the cost function) and update the best state accordingly, then at depth = 2, we maintain a cartesian product of 2 letters that can be changed simultaneously and we see what is maximum accuracy achievable by this and so on, till timeout happens. We take the depth based on length of word since smaller words will have less number of mistakes while larger words are more prone to more number of mistakes. Thus overall, we have this mix of local search and dynamic programming approaches that help us form the algorithm we have made.
+Algorithm : The algorithm works on the idea of iterative deepening but in the context of local search. We first divide the sentence into words, and then we maintain a variable depth that indicates at most how many letters we shall change simultaneously while correcting a word. Thus, at each iteration, we keep increasing the number of letters to be checked simultaneously. 
 
-State : string under consideration
+At depth = 1, we change one letter and see what is the maximum accuracy achieved by this (by changing the letter which decreases the cost function the most) and update the best state accordingly, then at depth = 2, we maintain a cartesian product of 2 letters that can be changed simultaneously and we see what is maximum accuracy achievable by this and so on, till timeout happens. We initialise the depth based on the length of word since smaller words will probably have lesser number of mistakes while larger words are prone to more mistakes. 
 
-Goal : string which has the least cost (measured using the cost function)
+Thus overall, we have a combination of local search and dynamic programming approaches that help us form the algorithm. 
+
+Now, when we enter a word, we find all possible alternatives a letter can have, and then find the letters(s) to change that bring about the maximum decrease in the objective function. 
+
+State : String under consideration
+
+Goal : String which has the least cost (measured using the cost function). For the heuristics we assume that the goal state cost is 0.
 
 Operator : At each step based on depth (which is number of characters to be changed simultaneously to get the maximum reduction in cost), we move to the next state, which gives the maximum reduction in cost.
+
+Heuristic: 
+Expression: f(n) = g(n) + weight*h(n). 
+Where, h(n) is the difference between the cost of the current state to that of the most desirable state(cost = 0). The current cost, g(n) is the difference between the costs of the start state and that at the current state. The weight currently used = 5.
+
+Branching factor: The effective branching factor is dependent on the number of elements in the confusion matrix of each element. From the final number of nodes we get, the dth root gives us the effective branching factor. Although we are taking one step at a time, filtering out all other options based on the weighted heuristic function, the unvisited states also count in the expression of the branching factor. 
