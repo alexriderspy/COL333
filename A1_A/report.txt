@@ -1,19 +1,11 @@
 Assignment 1 (Done in pairs)
 
-Name: Sreemanti Dey (2020CS10393) and Aryan Dua (2020CS50475)
+Sreemanti Dey (2020CS10393) and Aryan Dua (2020CS50475)
 
-Submitted by Sreemanti Dey (2020CS10393)
-
-Algorithm : The algorithm works on the idea of iterative deepening but in the context of local search. We maintain a variable depth that indicates at most how many letters we shall change simultaneously while correcting a word. Thus, at each iteration, we keep increasing the number of letters to be checked simultaneously. 
+Algorithm : The algorithm works on the idea of iterative deepening but in the context of local search. We maintain a variable depth that indicates at most how many letters we shall change simultaneously while correcting a word. Thus, at each iteration, we keep increasing the number of letters to be checked simultaneously. At depth = 1, we change one letter and see what is the maximum accuracy achievable by this (by computing the max decrease in the cost function) and update the best state accordingly, then at depth = 2, we maintain a cartesian product of 2 letters that can be changed simultaneously and we see what is maximum accuracy achievable by this and so on, till timeout happens. We take the depth based on length of word since smaller words will have less number of mistakes while larger words are more prone to more number of mistakes. Thus overall, we have this mix of local search and dynamic programming approaches that help us form the algorithm we have made.
 
 State : string under consideration
 
 Goal : string which has the least cost (measured using the cost function)
 
 Operator : At each step based on depth (which is number of characters to be changed simultaneously to get the maximum reduction in cost), we move to the next state, which gives the maximum reduction in cost.
-
-Branching factor : Since our algorithm is a variant of local search, it searches greedily step by step based on the number of characters to be checked simultaneously and the maximum cost reduction possible.
-
-Accuracy : This algorithm gives an accuracy of 100% on the input.txt shared within time of 2 sec. Overall for larger files with atmost 3-4 mistakes in each word, this algorithm gives ~100% accuracy in 8-9 sec.
-
-Idea : This is based on the common statistics of the average number of characters present in a word (4.7 ~ 5) and the average number of mistakes in each word made by an OCR. 1 mistake is most common, then 2 mistakes and so on, and the probability of the OCR making x mistakes decreases sharply as x increases since beyond 4-5 mistakes we won't be able to understand the word that was being mis translated. 
