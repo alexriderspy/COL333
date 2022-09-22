@@ -140,9 +140,18 @@ class SentenceCorrector(object):
         iter = 0       
         while True:
             for j in lis_words:
-                #depth = (2*len(words[j]))//5 + iter + 1
-                depth = iter+1
-                if (self.cost_fn(words[j])>maximum_cost-1 or len(words[j])<=5) and depth <=len(words[j]):
-                 #   print(j, depth)
+                if len(words[j])<=2:
+                    depth = iter + 1
+                elif len(words[j])<8:
+                    depth = iter + 2
+                else:
+                    depth = iter + 3
+                if (self.cost_fn(words[j])>maximum_cost/2 or len(words[j])<=5) and depth <=len(words[j]):
+                    print(words[j])
                     self.best_state = self.find_best_word(words[j], indices[j], depth, weight, cost_init, mat, self.best_state, j)
+                    words = self.best_state.split()
             iter+=1
+            #print(self.cost_fn("throughout"))
+            #print(self.cost_fn("dhroughout"))
+        #print(self.cost_fn("store sales activity varied throughout the country lending from good in the east to weak in the depressed southwest"))
+        #print(self.cost_fn("store sales activity varied throughout the country ranging from good in the east to weak in the depressed southwest"))
