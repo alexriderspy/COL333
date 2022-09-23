@@ -23,7 +23,8 @@ class SentenceCorrector(object):
     #The objective function
     def fn(self, initial_cost, sentence, wt):
         cost = self.cost_fn(sentence)
-        return cost
+        f = cost*wt + initial_cost-cost
+        return f
 
     #Substitutes the letter in the sentence
     def get_sentence(self,i, sentence, letter):
@@ -40,15 +41,29 @@ class SentenceCorrector(object):
         letters = itertools.product(*to_substitute)
         return letters
 
-    def find_best_letters(self, current_letters, original_sentence ,indices, wt, initial_cost, mat, ch):
+    def find_best_letters(self, current_letters, original_sentence ,indices, wt, initial_cost, mat, ch, word_index):
         better = current_letters
-        min = 10000000
+        min = 10000000000
         letters = self.get_letters(mat, indices, ch)
         for vals in letters:
             sentence = original_sentence
             for j in range(ch):
                 sentence = self.get_sentence(indices[j], sentence, vals[j])
-            f= self.fn(initial_cost, sentence, wt)
+            context = []
+            test_words = sentence.split()
+            
+            previous_context = 2
+            ahead_context = 2
+            for j in range(previous_context,0,-1):
+                if word_index>j-1:
+                    context.append(test_words[word_index-j])
+            context.append(test_words[word_index])
+            for j in range(1,1+ahead_context):
+                if word_index<=len(test_words) - j-1:
+                    context.append(test_words[word_index+j])
+
+            test_sentence = ' '.join(context)
+            f= self.fn(initial_cost, test_sentence, wt)
             if f<=min:
                 better, min = vals, f
         return better , min
@@ -74,7 +89,7 @@ class SentenceCorrector(object):
         for i in range(len(word)):
             test_list.append(i)
         indices = list(itertools.combinations(test_list, ch))
-        min = 1000000000
+        min = 10000000000
         letters = []
         positions = []
         letters_to_send = []
@@ -87,7 +102,7 @@ class SentenceCorrector(object):
         return indices, min, letters, positions, letters_to_send, positions_to_send
 
     #Finds the best letter to change in a word
-    def find_best_word(self, word, offset, ch, weight, cost_init, mat, sentence):
+    def find_best_word(self, word, offset, ch, weight, cost_init, mat, sentence, word_index):
         for j in range(len(word)):
             indices, min, letters, positions, letters_to_send, positions_to_send = self.init(ch, word, offset)
             for index in indices:
@@ -95,7 +110,7 @@ class SentenceCorrector(object):
                     letters_to_send[i] = word[index[i]]
                     positions_to_send[i] = offset + index[i]
 
-                new_letters, cost= self.find_best_letters(letters_to_send, sentence ,positions_to_send ,weight, cost_init, mat, ch)
+                new_letters, cost= self.find_best_letters(letters_to_send, sentence ,positions_to_send ,weight, cost_init, mat, ch, word_index)
                 if self.diff_letter(ch, new_letters, word, index)==True and cost < min:
                     min = cost
                     letters = new_letters
@@ -106,12 +121,6 @@ class SentenceCorrector(object):
             else:
                 for i in range(ch):
                     sentence = self.get_sentence(positions[i], sentence, letters[i])
-        return sentence
-
-    #carries out the series of steps
-    def iterative_deepening(self, word, offset, weight, cost_init, sentence, mat, ch):
-        for i in range(ch):
-            sentence = self.find_best_word(word, offset, i+1, weight, cost_init, mat, sentence)
         return sentence
 
     #converts the given conf matrix to the semantically opposite key value pairs
@@ -131,10 +140,10 @@ class SentenceCorrector(object):
         words, indices, weight, self.best_state, cost_init, mat = self.initialise(start_state)
         
         self.original_state = start_state
-        lis_words = [a for a in range(len(words))]
         
         depth = 1
         while True:
-            for j in lis_words:
-                self.best_state = self.find_best_word(words[j], indices[j], depth, weight, cost_init, mat, self.best_state)
+            for j in range(len(words)):
+                self.best_state = self.find_best_word(words[j], indices[j], depth, weight, cost_init, mat, self.best_state, j)
+            words = self.best_state.split()
             depth+=1 

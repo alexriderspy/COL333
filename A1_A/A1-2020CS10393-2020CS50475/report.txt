@@ -1,0 +1,59 @@
+Assignment 1 (Done in pairs)
+
+Sreemanti Dey (2020CS10393) and Aryan Dua (2020CS50475)
+
+Algorithm : The algorithm works on the idea of iterative deepening but in the context of local search. We first divide the 
+sentence into words, and then we maintain a variable depth that indicates at most how many letters we shall change simultaneously 
+while correcting a word. Thus, at each iteration, we keep increasing the number of letters to be changed simultaneously. 
+
+At depth = 1, we change atmost one letter in every word and see what is the maximum accuracy achieved by this (by changing the letter which decreases 
+the cost function the most) and update the best state accordingly, then at depth = 2, we maintain a cartesian product of the possible changes in 2 
+letters in a word (we do this for every word) and we see what is maximum accuracy achievable by this and so on we do for increasing depths, 
+till timeout occurs. 
+
+The best state is updated on each iteration and the new depth is explored on the best state obtained so far, while still remembering what 
+the original state was since the confusion matrix is to be used on the original letter and not the changed letter.
+
+Objective function :
+The objective function is computed by taking into consideration the context of 5 words including the current word (2 in front, 2 previous words) i.e.
+at a time 5 words determine the letter(s) we shall change.
+
+Local search : 
+We perform here a greedy approach which is essentially local since we see the best letter(s) we can change based on the context while transitioning 
+from one state to another, we did not introduce randomization since randomization works well when the time out is high and it slowly moves towards 
+the goal but in realistic scenarios, we don't have a lot of time so deterministically reaching to the goal state, while still ensuring high accuracy is
+the core idea of our algorithm.
+
+Dynamic Programming :
+Here, we are taking one step at a time and after one step, we can say with some amount of confidence that one mistake words have been corrected, next time
+we can say words with at most 2 mistakes have been fully corrected and so on we steadily remove errors based on context and move towards our goal state.
+
+Thus overall, we have a combination of local search and dynamic programming approaches that help us form the algorithm. 
+
+Step: 
+Now, when we enter a word, we find all possible alternatives a letter can have, and then find the letter(s) to change that brings 
+about the maximum decrease in the objective function, calculated considering 5 words at a time. 
+
+State : current string, with the words in the string being considered one by one and the best state being updated with every word change.
+
+Goal : string which has the least objective function value. We assume that the goal state function value is 0.
+
+Operator : At each step, based on depth (which is the maximum number of characters to be changed simultaneously to get the maximum reduction in the
+objective function value), we move to the next state, which gives the maximum reduction in cost.
+
+Heuristic: 
+Expression: f(n) = g(n) + weight*h(n). 
+Where, h(n) is the difference between the cost of the current state to that of the most desirable state(cost = 0). 
+The current cost, g(n) is the difference between the costs of the start state and that at the current state. 
+The weight currently used = 2.
+
+Transition cost : 
+This depends on the depth we are at currently so at a particular depth, the time that the cartesian product, that explores the simultaneous 
+changes in the letters of the word under consideration takes determines our transition cost.
+
+Branching factor: 
+The effective branching factor for a word is dependent on the depth. For depth = 1, the branching factor for each letter is the number of correct letters 
+that letter could be replaced by (obtained using the confusion matrix) so that we get a maximum decrease in the cost function. Thus overall for a word, the 
+branching factor is the total number of such letters that could replace the letters in a word. Next for depth = 2, for a word the branching factor would be 
+the cartesian product of the possible letters that could replace the letters in the word at indices i and j summed over all i and j. And so on 
+the branching factor varies for each depth.
