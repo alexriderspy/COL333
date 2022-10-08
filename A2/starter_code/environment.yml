@@ -1,0 +1,21 @@
+name: myenv
+channels:
+  - defaults
+dependencies:
+  - ca-certificates=2022.07.19
+  - certifi=2022.9.14
+  - libcxx=14.0.6
+  - libffi=3.3
+  - ncurses=6.3
+  - openssl=1.1.1q
+  - pip=22.2.2
+  - python=3.7.13
+  - readline=8.1.2
+  - setuptools=63.4.1
+  - sqlite=3.39.3
+  - tk=8.6.12
+  - wheel=0.37.1
+  - xz=5.2.6
+  - zlib=1.2.12
+  - pip:
+    - numpy==1.21.6
