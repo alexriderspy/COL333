@@ -1,0 +1,5 @@
+1) not always select optimal moves-select suboptimal too sometimes (so that we can
+win against people who will do basic version)
+2) we need to think of chess type strategies - like put in centre position, line up
+two - such that diag/horizontal/vertical, 3 in a row (also good), 4 is best (but 
+popouts will actually destroy the states we have already got)
