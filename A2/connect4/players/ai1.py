@@ -40,7 +40,6 @@ class AIPlayer:
             for r in range(board.shape[0] - 1, 0, -1):
                 board[r, column] = board[r - 1, column]
             board[0, column] = 0
-            print(board)
             num_popouts[player_num].decrement()
         return board, num_popouts
 
@@ -48,20 +47,18 @@ class AIPlayer:
         if i==2:
             if len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
                 return get_pts(2 if self.player_number == 1 else 1,state[0])
-            print(state)
             return self.exp_val(state)
         else:
             if len(get_valid_actions(self.player_number,state)) == 0:
                 return get_pts(self.player_number,state[0])
-            print(state)
             return self.max_val(state)
 
     def exp_val(self,state):
         v = 0
         valid_actions = get_valid_actions(2 if self.player_number == 1 else 1,state)
         for action in valid_actions:
-            state = self.perform_action(2 if self.player_number == 1 else 1,action,state)
-            v += self.value(1,state)
+            st = self.perform_action(2 if self.player_number == 1 else 1,action,state)
+            v += self.value(1,st)
         v = v/len(valid_actions)
         return v
 
@@ -69,18 +66,21 @@ class AIPlayer:
         v = -inf
         valid_actions = get_valid_actions(self.player_number,state)
         for action in valid_actions:
-            state = self.perform_action(self.player_number,action,state)
-            v = max(v,self.value(2,state))
+            st = self.perform_action(self.player_number,action,state)
+            v = max(v,self.value(2,st))
         return v
 
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
         action_best = None
         value_of_best_action = -inf
+        iter = 0
         for action in valid_actions:
-            state = self.perform_action(self.player_number, action, state)
-            val = self.value(2,state)
+            print(iter)
+            st = self.perform_action(self.player_number, action, state)
+            val = self.value(2,st)
             if val > value_of_best_action:
                 value_of_best_action = val
                 action_best = action
+            iter+=1
         return action_best
