@@ -1,14 +1,4 @@
-6 8
-0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 
-6
-{"player": 1, "move": 0, "is_pop": false}
-{"player": 2, "move": 5, "is_pop": false}
-{"player": 1, "move": 0, "is_pop": false}
-{"player": 2, "move": 7, "is_pop": false}
-{"player": 1, "move": "TLE", "is_pop": "TLE"}
-{"player": 2, "move": 0, "is_pop": false}
+Game Over
+Player 1 Score: 156
+Player 2 Score: 299
+Margin difference: 91.66666666666666

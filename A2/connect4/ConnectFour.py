@@ -63,7 +63,7 @@ class Game:
                 s += '\n'
             s += f'{popout_moves}\n'
             log_file.write(s)
-            print(s)
+            #print(s)
 
         # https://stackoverflow.com/a/38159672
         root = tk.Tk()
@@ -117,6 +117,14 @@ class Game:
                     s = 'Game Over\n'
                     s += f'Player 1 Score: {get_pts(1, self.state[0])}\n'
                     s += f'Player 2 Score: {get_pts(2, self.state[0])}\n'
+                    margin_diff = 0
+                    pt1 = get_pts(1,self.state[0])
+                    pt2 = get_pts(2,self.state[0])
+                    if pt1 > pt2:
+                        margin_diff = ((pt1-pt2)/pt2)*100
+                    else:
+                        margin_diff = ((pt2-pt1)/pt1)*100
+                    s += 'Margin difference: ' + str(margin_diff) + '\n'
                     log_file.write(s)
                     print(s)
                 break

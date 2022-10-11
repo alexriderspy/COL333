@@ -14,3 +14,7 @@
                         2. Dictionary of int to Integer. It will tell the remaining popout moves given a player
         :return: action (0 based index of the column and if it is a popout move)
         """
+
+ideas:
+1) depth change based on number of valid actions left
+2) 

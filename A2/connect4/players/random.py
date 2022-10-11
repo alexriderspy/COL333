@@ -25,6 +25,5 @@ class RandomPlayer:
         :return: action (0 based index of the column and if it is a popout move)
         """
         valid_actions = get_valid_actions(self.player_number, state)
-        print(valid_actions)
         action, is_popout = random.choice(valid_actions)
         return action, is_popout

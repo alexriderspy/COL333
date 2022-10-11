@@ -17,7 +17,7 @@ class AIPlayer:
         self.type = 'ai'
         self.player_string = 'Player {}:ai'.format(player_number)
         self.time = time
-        self.depth = 5
+        self.depth = 4
         # Do the rest of your implementation here
 
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
@@ -47,11 +47,11 @@ class AIPlayer:
     def value(self,i,state,depth):
         if i==2:
             if depth >= self.depth or len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
-                return get_pts(2 if self.player_number == 1 else 1,state[0])
+                return get_pts(self.player_number,state[0])-get_pts(2 if self.player_number == 1 else 1,state[0])
             return self.exp_val(state,depth)
         else:
             if depth >= self.depth or len(get_valid_actions(self.player_number,state)) == 0:
-                return get_pts(self.player_number,state[0])
+                return get_pts(self.player_number,state[0])-get_pts(2 if self.player_number == 1 else 1,state[0])
             return self.max_val(state,depth)
 
     def exp_val(self,state,depth):
@@ -73,6 +73,12 @@ class AIPlayer:
 
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
+        if len(valid_actions) >= 8:
+            self.depth = 3
+        elif len(valid_actions) >= 5:
+            self.depth = 5
+        else:
+            self.depth = 7
         action_best = None
         value_of_best_action = -inf
         for action in valid_actions:
