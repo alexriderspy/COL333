@@ -17,6 +17,7 @@ class AIPlayer:
         self.type = 'ai'
         self.player_string = 'Player {}:ai'.format(player_number)
         self.time = time
+        self.depth = 5
         # Do the rest of your implementation here
 
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
@@ -43,44 +44,41 @@ class AIPlayer:
             num_popouts[player_num].decrement()
         return board, num_popouts
 
-    def value(self,i,state):
+    def value(self,i,state,depth):
         if i==2:
-            if len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
+            if depth >= self.depth or len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
                 return get_pts(2 if self.player_number == 1 else 1,state[0])
-            return self.exp_val(state)
+            return self.exp_val(state,depth)
         else:
-            if len(get_valid_actions(self.player_number,state)) == 0:
+            if depth >= self.depth or len(get_valid_actions(self.player_number,state)) == 0:
                 return get_pts(self.player_number,state[0])
-            return self.max_val(state)
+            return self.max_val(state,depth)
 
-    def exp_val(self,state):
+    def exp_val(self,state,depth):
         v = 0
         valid_actions = get_valid_actions(2 if self.player_number == 1 else 1,state)
         for action in valid_actions:
             st = self.perform_action(2 if self.player_number == 1 else 1,action,state)
-            v += self.value(1,st)
+            v += self.value(1,st,depth+1)
         v = v/len(valid_actions)
         return v
 
-    def max_val(self,state):
+    def max_val(self,state,depth):
         v = -inf
         valid_actions = get_valid_actions(self.player_number,state)
         for action in valid_actions:
             st = self.perform_action(self.player_number,action,state)
-            v = max(v,self.value(2,st))
+            v = max(v,self.value(2,st,depth+1))
         return v
 
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
         action_best = None
         value_of_best_action = -inf
-        iter = 0
         for action in valid_actions:
-            print(iter)
             st = self.perform_action(self.player_number, action, state)
-            val = self.value(2,st)
+            val = self.value(2,st,1)
             if val > value_of_best_action:
                 value_of_best_action = val
                 action_best = action
-            iter+=1
         return action_best
