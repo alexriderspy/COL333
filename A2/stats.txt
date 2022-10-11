@@ -1,60 +1,77 @@
 Game Over
-Player 1 Score: 147
+Player 1 Score: 138
+Player 2 Score: 312
+Margin difference: 126.08695652173914
+
+Game Over
+Player 1 Score: 150
+Player 2 Score: 300
+Margin difference: 100.0
+
+Game Over
+Player 1 Score: 124
 Player 2 Score: 309
-Margin difference: 110.20408163265304
+Margin difference: 149.19354838709677
 
 Game Over
-Player 1 Score: 89
-Player 2 Score: 186
-Margin difference: 108.98876404494382
+Player 1 Score: 161
+Player 2 Score: 254
+Margin difference: 57.7639751552795
 
 Game Over
-Player 1 Score: 105
-Player 2 Score: 422
-Margin difference: 301.9047619047619
+Player 1 Score: 24
+Player 2 Score: 78
+Margin difference: 225.0
 
 Game Over
-Player 1 Score: 108
-Player 2 Score: 242
-Margin difference: 124.07407407407408
+Player 1 Score: 65
+Player 2 Score: 283
+Margin difference: 335.3846153846154
 
 Game Over
-Player 1 Score: 99
-Player 2 Score: 425
-Margin difference: 329.2929292929293
+Player 1 Score: 109
+Player 2 Score: 313
+Margin difference: 187.1559633027523
 
 Game Over
-Player 1 Score: 164
-Player 2 Score: 244
-Margin difference: 48.78048780487805
+Player 1 Score: 100
+Player 2 Score: 301
+Margin difference: 200.99999999999997
 
 Game Over
-Player 1 Score: 97
-Player 2 Score: 334
-Margin difference: 244.32989690721652
+Player 1 Score: 364
+Player 2 Score: 108
+Margin difference: 237.037037037037
 
 Game Over
-Player 1 Score: 137
-Player 2 Score: 346
-Margin difference: 152.55474452554745
+Player 1 Score: 239
+Player 2 Score: 111
+Margin difference: 115.31531531531532
 
 Game Over
-Player 1 Score: 28
-Player 2 Score: 53
-Margin difference: 89.28571428571429
-
-Game Over
-Player 1 Score: 61
-Player 2 Score: 264
-Margin difference: 332.78688524590166
+Player 1 Score: 319
+Player 2 Score: 176
+Margin difference: 81.25
 
 Game Over
 Player 1 Score: 70
-Player 2 Score: 391
-Margin difference: 458.57142857142856
+Player 2 Score: 24
+Margin difference: 191.66666666666669
 
 Game Over
-Player 1 Score: 156
-Player 2 Score: 299
-Margin difference: 91.66666666666666
+Player 1 Score: 337
+Player 2 Score: 94
+Margin difference: 258.51063829787233
 
+Game Over
+Player 1 Score: 281
+Player 2 Score: 119
+Margin difference: 136.1344537815126
+
+Game Over
+Player 1 Score: 253
+Player 2 Score: 198
+Margin difference: 27.77777777777778
+
+average on time = 5 sec > 100 hence full for part 1
+161.6

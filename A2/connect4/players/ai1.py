@@ -78,7 +78,7 @@ class AIPlayer:
         elif len(valid_actions) >= 5:
             self.depth = 5
         else:
-            self.depth = 7
+            self.depth = 6
         action_best = None
         value_of_best_action = -inf
         for action in valid_actions:
