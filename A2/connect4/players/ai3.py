@@ -44,6 +44,7 @@ class AIPlayer:
             num_popouts[player_num].decrement()
         return board, num_popouts
 
+        
     def value(self,i,state,depth):
         if i==2:
             if depth >= self.depth or len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
@@ -74,9 +75,9 @@ class AIPlayer:
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
         if len(valid_actions) >= 8:
-            self.depth = 2
-        elif len(valid_actions) >= 4:
-            self.depth = 4
+            self.depth = 3
+        elif len(valid_actions) >= 5:
+            self.depth = 5
         else:
             self.depth = 6
         action_best = None

@@ -15,6 +15,4 @@
         :return: action (0 based index of the column and if it is a popout move)
         """
 
-ideas:
-1) depth change based on number of valid actions left
-2) 
+done this part
