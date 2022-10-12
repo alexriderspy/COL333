@@ -75,3 +75,5 @@ Margin difference: 27.77777777777778
 
 average on time = 5 sec > 100 hence full for part 1
 161.6
+
+
