@@ -41,14 +41,17 @@ class AIPlayer:
             num_popouts[player_num].decrement()
         return board, num_popouts
 
+    def eval(self,state):
+        return get_pts(self.player_number,state[0])-get_pts(2 if self.player_number == 1 else 1,state[0])
+    
     def minimax(self, i, state, depth, alpha, beta):
         if i==2:
             if depth >= self.depth or len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
-                return get_pts(self.player_number,state[0])-get_pts(2 if self.player_number == 1 else 1,state[0])
+                return self.eval(state)
             return self.min_val(state,depth,alpha,beta)
         else:
             if depth >= self.depth or len(get_valid_actions(self.player_number,state)) == 0:
-                return get_pts(self.player_number,state[0])-get_pts(2 if self.player_number == 1 else 1,state[0])
+                return self.eval(state)
             return self.max_val(state,depth,alpha,beta)
 
     def max_val(self,state,depth,alpha,beta):

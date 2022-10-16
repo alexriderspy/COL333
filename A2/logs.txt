@@ -1,4 +1,4 @@
 Game Over
-Player 1 Score: 154
-Player 2 Score: 228
-Margin difference: 48.05194805194805
+Player 1 Score: 186
+Player 2 Score: 144
+Margin difference: 29.166666666666668

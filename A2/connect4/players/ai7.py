@@ -7,7 +7,7 @@ from connect4.utils import get_valid_actions, Integer
 
 
 class AIPlayer:
-    win_pts = [0, 2, 8, 18, 1000]
+    win_pts = [0, 0, 2, 5, 20]
 
     def __init__(self, player_number: int, time: int):
         """
@@ -131,12 +131,33 @@ class AIPlayer:
 
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
-        if len(valid_actions) >= 8:
-            self.depth = 2
-        elif len(valid_actions) >= 4:
-            self.depth = 4
+        if self.player_number == 2:
+            # if len(valid_actions) >= 8:
+            #     self.depth = 2
+            # elif len(valid_actions) >= 4:
+            #     self.depth = 4
+            # else:
+            #     self.depth = 6
+            if len(valid_actions) >= 8:
+                self.depth = 3
+            elif len(valid_actions) >= 4:
+                self.depth = 4
+            else:
+                self.depth = 6
         else:
-            self.depth = 6
+            if len(valid_actions) >= 8:
+                self.depth = 3
+            elif len(valid_actions) >= 4:
+                self.depth = 5
+            else:
+                self.depth = 7
+
+            # if len(valid_actions) >= 8:
+            #     self.depth = 3
+            # elif len(valid_actions) >= 4:
+            #     self.depth = 5
+            # else:
+            #     self.depth = 7
         alpha = -inf
         beta = inf
         action_best = None
