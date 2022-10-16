@@ -17,7 +17,7 @@ import numpy as np
 from connect4.utils import get_pts, get_valid_actions, Integer
 
 # Local libs
-from connect4.players.ai7 import AIPlayer
+from connect4.players.ai5 import AIPlayer
 # from connect4.players.ai2 import AIPlayer as AIPlayer2
 from connect4.players.random import RandomPlayer
 from connect4.players.human import HumanPlayer

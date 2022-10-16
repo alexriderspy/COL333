@@ -1,4 +1,40 @@
-Game Over
-Player 1 Score: 88
-Player 2 Score: 135
-Margin difference: 53.40909090909091
+6 8
+0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 
+6
+{"player": 1, "move": 0, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 0, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": true}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": true}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": true}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": true}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": true}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": true}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}

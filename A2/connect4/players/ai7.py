@@ -123,7 +123,7 @@ class AIPlayer:
         valid_moves = get_valid_actions(self.player_number,state)
         for move in valid_moves:
             child_state = self.perform_action(self.player_number, move, state)
-            minEval = min(minEval, self.minimax(2,child_state, depth+1, alpha, beta))
+            minEval = min(minEval, self.minimax(1,child_state, depth+1, alpha, beta))
             if minEval <= alpha:
                 return minEval
             beta = min(beta, minEval)
