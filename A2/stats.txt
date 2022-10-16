@@ -75,3 +75,24 @@ Margin difference: 27.77777777777778
 
 average on time = 5 sec > 100 hence full for part 1
 161.6
+
+Game Over
+Player 1 Score: 122
+Player 2 Score: 272
+Margin difference: 122.95081967213115
+
+Game Over
+Player 1 Score: 292
+Player 2 Score: 124
+Margin difference: 135.48387096774192
+
+Game Over
+Player 1 Score: 75
+Player 2 Score: 464
+Margin difference: 518.6666666666666
+
+Game Over
+Player 1 Score: 476
+Player 2 Score: 85
+Margin difference: 459.99999999999994
+

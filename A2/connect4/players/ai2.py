@@ -151,10 +151,9 @@ class AIPlayer:
         num_popout[1].get_int() # gets the popout moves remaining for the 1st player
         num_popout[1].decrement() # decrement the popout moves left for the 1st player
         num_popout[1].increment() # increment the popout moves left for the 1st player"""
-        depth = 6
+        depth = 4
         alpha = -inf
         beta = inf
-        print("entered")
         val = self.minimax(state, self.player_number, depth, alpha, beta, True)
         print(val)
         print(self.best_move)
