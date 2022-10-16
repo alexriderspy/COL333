@@ -64,9 +64,9 @@ class AIPlayer:
 
     def min_val(self,state,depth,alpha,beta):
         minEval = inf
-        valid_moves = get_valid_actions(self.player_number,state)
+        valid_moves = get_valid_actions(2 if self.player_number == 1 else 1,state)
         for move in valid_moves:
-            child_state = self.perform_action(self.player_number, move, state)
+            child_state = self.perform_action(2 if self.player_number == 1 else 1, move, state)
             minEval = min(minEval, self.minimax(1,child_state, depth+1, alpha, beta))
             if minEval <= alpha:
                 return minEval
