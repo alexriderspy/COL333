@@ -99,3 +99,10 @@ Game Over
 Player 1 Score: 282
 Player 2 Score: 299
 Margin difference: 6.028368794326241
+
+
+6 x 10 - player 1
+12 x 12 - player 2
+6 x 8 - player 1
+4 x 6 - player 2
+8 x 8 
