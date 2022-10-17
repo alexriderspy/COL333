@@ -1,4 +1,21 @@
-Game Over
-Player 1 Score: 202
-Player 2 Score: 147
-Margin difference: 37.41496598639456
+6 10
+0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 
+9
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}

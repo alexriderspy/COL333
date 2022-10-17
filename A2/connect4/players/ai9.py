@@ -4,10 +4,10 @@ import numpy as np
 import copy
 from typing import List, Tuple, Dict, Union
 from connect4.utils import get_valid_actions, Integer
-import time
+
 
 class AIPlayer:
-    win_pts = [0, 0, 2, 500, 2000]
+    win_pts = [0, 0, 2, 5, 20]
 
     def __init__(self, player_number: int, time: int):
         """
@@ -19,7 +19,6 @@ class AIPlayer:
         self.player_string = 'Player {}:ai'.format(player_number)
         self.time = time
         self.depth = 4
-        self.best_move = None
         # Do the rest of your implementation here
 
     def get_score(self, player_number: int, row: Union[np.array, List[int]]):
@@ -63,16 +62,16 @@ class AIPlayer:
     def get_pts(self, player_number: int, board: np.array) -> int:
         score = 0
         m, n = board.shape
-        
+        # score in rows
         for i in range(m):
             score += self.get_score(player_number, board[i])
-        
+        # score in columns
         for j in range(n):
             score += self.get_score(player_number, board[:, j])
-        
+        # scores in diagonals_primary
         for diag in self.get_diagonals_primary(board):
             score += self.get_score(player_number, diag)
-        
+        # scores in diagonals_secondary
         for diag in self.get_diagonals_secondary(board):
             score += self.get_score(player_number, diag)
         return score
@@ -98,24 +97,99 @@ class AIPlayer:
             num_popouts[player_num].decrement()
         return board, num_popouts
 
+    def evaluate_window(self, window, player_num):
+        score = 0
+
+        if window.count(player_num) == 4:                               #max 4 consec possible, currently 4
+            score += 100
+        elif window.count(player_num) == 3 and window.count(0) == 1:    #max 4 consec possible, currently 3
+            score += 80
+        elif window.count(player_num) == 2 and window.count(0) == 2:    #max 4 consec possible, currently 2
+            score += 50
+        elif window.count(player_num) == 1 and window.count(0) == 3:    #max 4 consec possible, currently 1
+            score += 40
+        elif window.count(player_num) == 3 and window.count(0) == 0:    #max 3 consec possible, currently 3
+            score += 30
+        elif window.count(player_num) == 2 and window.count(0) == 1:    #max 3 consec possible, currently 2
+            score += 25
+        elif window.count(player_num) == 1 and window.count(0) == 2:    #max 3 consec possible, currently 1
+            score += 20
+        elif window.count(player_num) == 2 and window.count(0) == 0:    #max 2 consec possible, currently 2
+            score += 20
+        elif window.count(player_num) == 1 and window.count(0) == 1:    #max 2 consec possible, currently 1
+            score += 10
+
+        #beech mein gap is better than consec gap
+        return score
+
+    def score_position(self, board, player_num, window_size):
+        score = 0
+        rows, cols = board.shape
+        ## Score columns for distance from centre
+        middle = cols//2
+
+        arr = list(board[:, middle])
+        for i in range(len(arr)):
+            if arr[i]==player_num:
+                score+=500*(i+1)
+
+        k = 50
+        for j in range(middle):
+            arr = list(board[:, j])
+            for i in range(len(arr)):
+                if arr[i]==player_num:
+                    score+=k*(i+1)*(j+1)
+        
+        for j in range(middle+1, cols):
+            arr = list(board[:, j])
+            for i in range(len(arr)):
+                if arr[i]==player_num:
+                    score+=k*(i+1)*(cols-j)
+
+        ## Score Horizontal
+        for r in range(rows):
+            row_array = list(board[r,:])
+            for c in range(cols-3):
+                window = row_array[c:c+window_size]
+                score += self.evaluate_window(window, player_num)
+
+        ## Score Vertical
+        for c in range(cols):
+            col_array = list(board[:,c])
+            for r in range(rows-3):
+                window = col_array[r:r+window_size]
+                score += self.evaluate_window(window, player_num)
+
+        ## Score posiive sloped diagonal
+        for r in range(rows-3):
+            for c in range(cols-3):
+                window = [board[r+i][c+i] for i in range(window_size)]
+                score += self.evaluate_window(window, player_num)
+
+        #score negative sloped diagonal
+        for r in range(rows-3):
+            for c in range(cols-3):
+                window = [board[r+3-i][c+i] for i in range(window_size)]
+                score += self.evaluate_window(window, player_num)
+
+        return score
+
     def eval(self,state):
-        return self.get_pts(self.player_number,state[0])-self.get_pts(2 if self.player_number == 1 else 1,state[0])
+        return self.get_pts(self.player_number,state[0]) + self.score_position(state[0],self.player_number,4) -self.get_pts(2 if self.player_number == 1 else 1,state[0]) -self.score_position(state[0],2 if self.player_number==1 else 1,4)
 
     def minimax(self, i, state, depth, alpha, beta):
         if i==2:
             if depth >= self.depth or len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
-                return self.eval(state)
-            return self.min_val(state,depth,alpha,beta)
+                return self.eval(state)  
+            return self.min_val(state,depth,alpha,beta)              
         else:
             if depth >= self.depth or len(get_valid_actions(self.player_number,state)) == 0:
-                return self.eval(state)
+                return self.eval(state)                
             return self.max_val(state,depth,alpha,beta)
 
     def max_val(self,state,depth,alpha,beta):
         maxEval = -inf
         valid_moves = get_valid_actions(self.player_number,state)
-        valid_moves = self.order_valid_actions(valid_moves)
-
         for move in valid_moves:
             child_state = self.perform_action(self.player_number, move, state)
             maxEval = max(maxEval, self.minimax(2,child_state, depth+1, alpha, beta))
@@ -127,8 +201,6 @@ class AIPlayer:
     def min_val(self,state,depth,alpha,beta):
         minEval = inf
         valid_moves = get_valid_actions(2 if self.player_number == 1 else 1,state)
-        valid_moves = self.order_valid_actions(valid_moves)
-
         for move in valid_moves:
             child_state = self.perform_action(2 if self.player_number == 1 else 1, move, state)
             minEval = min(minEval, self.minimax(1,child_state, depth+1, alpha, beta))
@@ -137,24 +209,13 @@ class AIPlayer:
             beta = min(beta, minEval)
         return minEval
 
-    def order_valid_actions(self,valid_actions):
-        tmp = sorted(valid_actions)
-        no_popouts = list(filter((lambda b : b[1] == False),tmp))
-        popouts = list(filter((lambda b : b[1] == True),tmp))
-        l = len(no_popouts)
-        valid_actions = popouts + no_popouts[l//2:] + no_popouts[0:l//2]
-        return valid_actions
-
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
-        #order valid actions
-        
-        valid_actions = self.order_valid_actions(valid_actions)
         if self.player_number == 2:
             if len(valid_actions) >= 8:
                 self.depth = 3
             elif len(valid_actions) >= 4:
-                self.depth = 5
+                self.depth = 4
             else:
                 self.depth = 6
         else:

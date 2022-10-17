@@ -101,7 +101,7 @@ class AIPlayer:
         score = 0
 
         if window.count(player_num) == 4:                               #max 4 consec possible, currently 4
-            score += 100
+            score += 100000
         elif window.count(player_num) == 3 and window.count(0) == 1:    #max 4 consec possible, currently 3
             score += 80
         elif window.count(player_num) == 2 and window.count(0) == 2:    #max 4 consec possible, currently 2
@@ -270,11 +270,18 @@ class AIPlayer:
         m,n = board.shape
         unique, counts = np.unique(board, return_counts=True)
         num = dict(zip(unique, counts))
-        if 0 in num and self.start_popping == False and num[0]<=m*n//2:
+        if (0 in num and num[0]<=m*n//2) or (0 not in num and self.start_popping == False):
             self.start_popping = True
         action_best = None
 
         valid_actions = self.get_valid_actions(self.player_number,state)
+        
+        if len(valid_actions) >= 8:
+            depth = 2
+        elif len(valid_actions) >= 4:
+            depth = 3
+        else:
+            depth = 4
 
         value_of_best_action = -inf
         for action in valid_actions:
