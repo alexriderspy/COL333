@@ -1,4 +1,91 @@
-Game Over
-Player 1 Score: 251
-Player 2 Score: 316
-Margin difference: 25.89641434262948
+12 12
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+9
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 10, "is_pop": false}
+{"player": 1, "move": 10, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": "TLE", "is_pop": "TLE"}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": "TLE", "is_pop": "TLE"}
+{"player": 1, "move": 6, "is_pop": true}
+{"player": 2, "move": "TLE", "is_pop": "TLE"}
+{"player": 1, "move": "TLE", "is_pop": "TLE"}

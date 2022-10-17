@@ -104,7 +104,7 @@ class AIPlayer:
         elif window.count(player_num) == 3 and window.count(0) == 1:    #max 4 consec possible, currently 3
             score += 8000
         elif window.count(player_num) == 2 and window.count(0) == 2:    #max 4 consec possible, currently 2
-            score += 500
+            score += 800
         elif window.count(player_num) == 1 and window.count(0) == 3:    #max 4 consec possible, currently 1
             score += 400
         elif window.count(player_num) == 3 and window.count(0) == 0:    #max 3 consec possible, currently 3 
@@ -114,16 +114,12 @@ class AIPlayer:
         elif window.count(player_num) == 1 and window.count(0) == 2:    #max 3 consec possible, currently 1
             score += 20
         elif window.count(player_num) == 2 and window.count(0) == 0:    #max 2 consec possible, currently 2
-            score += 20
+            score += 10
         elif window.count(player_num) == 1 and window.count(0) == 1:    #max 2 consec possible, currently 1
             score += 10
 
         #beech mein gap is better than consec gap
         return score
-
-    def evaluate_popouts (self, state, player_num):
-        board, popouts = state
-
 
     def evaluate_box(self, box, player_num):
         if box.count(player_num) == len(box):
@@ -202,7 +198,6 @@ class AIPlayer:
         return score
 
     def eval(self, board, depth):
-        #score = self.get_pts(1, board) - self.get_pts(2, board)
         score = self.score_position(board, self.player_number, 4, depth) - self.score_position(board, 2 if self.player_number == 1 else 1, 4, depth)
         return score
 
@@ -286,12 +281,62 @@ class AIPlayer:
 
         valid_actions = self.get_valid_actions(self.player_number,state,False)
         
-        if len(valid_actions) >= 8:
-            depth = 2
-        elif len(valid_actions) >= 4:
-            depth = 3
-        else:
-            depth = 5
+        if self.time >= 5 and self.time <= 6:
+            if len(valid_actions) >= 19:
+                depth = 0
+            elif len(valid_actions)  >= 16:
+                depth = 1
+            elif len(valid_actions) >= 8:
+                depth = 2
+            elif len(valid_actions) >= 4:
+                depth = 3
+            else:
+                depth = 5
+        elif self.time >=7 and self.time <= 8:
+            if len(valid_actions) >= 19:
+                depth = 1
+            elif len(valid_actions)  >= 16:
+                depth = 2
+            elif len(valid_actions) >= 8:
+                depth = 3
+            elif len(valid_actions) >= 4:
+                depth = 4
+            else:
+                depth = 6
+        elif self.time >=9 and self.time <= 12:
+            if len(valid_actions) >= 19:
+                depth = 1
+            elif len(valid_actions)  >= 16:
+                depth = 2
+            elif len(valid_actions) >= 8:
+                depth = 4
+            elif len(valid_actions) >= 4:
+                depth = 5
+            else:
+                depth = 7
+        elif self.time >=13 and self.time <= 16:
+            if len(valid_actions) >= 19:
+                depth = 2
+            elif len(valid_actions)  >= 16:
+                depth = 3
+            elif len(valid_actions) >= 8:
+                depth = 4
+            elif len(valid_actions) >= 4:
+                depth = 6
+            else:
+                depth = 8
+        elif self.time >=17 and self.time <= 20:
+            if len(valid_actions) >= 19:
+                depth = 2
+            elif len(valid_actions)  >= 16:
+                depth = 3
+            elif len(valid_actions) >= 8:
+                depth = 5
+            elif len(valid_actions) >= 4:
+                depth = 7
+            else:
+                depth = 8
+
 
         value_of_best_action = -inf
         for action in valid_actions:
