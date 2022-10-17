@@ -1,21 +1,4 @@
-6 10
-0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 
-9
-{"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 3, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 5, "is_pop": false}
+Game Over
+Player 1 Score: 266
+Player 2 Score: 122
+Margin difference: 118.0327868852459

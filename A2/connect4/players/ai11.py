@@ -101,9 +101,9 @@ class AIPlayer:
         score = 0
 
         if window.count(player_num) == 4:                               #max 4 consec possible, currently 4
-            score += 100000
+            score += 10000000
         elif window.count(player_num) == 3 and window.count(0) == 1:    #max 4 consec possible, currently 3
-            score += 80
+            score += 80000
         elif window.count(player_num) == 2 and window.count(0) == 2:    #max 4 consec possible, currently 2
             score += 50
         elif window.count(player_num) == 1 and window.count(0) == 3:    #max 4 consec possible, currently 1
