@@ -22,7 +22,7 @@ class AIPlayer:
         self.time = time
         # Do the rest of your implementation here
 
-    def get_valid_actions(self, player_number: int, state: Tuple[np.array, Dict[int, Integer]]) -> List[Tuple[int, bool]]:
+    def get_valid_actions(self, player_number: int, state: Tuple[np.array, Dict[int, Integer]], local_start_popping) -> List[Tuple[int, bool]]:
         """
         :return: All the valid actions for player (with player_number) for the provided current state of board
         """
@@ -35,7 +35,7 @@ class AIPlayer:
             if 0 in board[:, col]:
                 valid_moves.append((col, False))
         # Adding popout move
-        if pop_out_left > 0 and self.start_popping:
+        if pop_out_left > 0 and (self.start_popping or local_start_popping):
             for col in range(n):
                 if col % 2 == player_number - 1:
                     # First player is allowed only even columns and second player is allowed only odd columns
@@ -99,16 +99,15 @@ class AIPlayer:
 
     def evaluate_window(self, window, player_num):
         score = 0
-
         if window.count(player_num) == 4:                               #max 4 consec possible, currently 4
-            score += 10000000
+            score += 100000
         elif window.count(player_num) == 3 and window.count(0) == 1:    #max 4 consec possible, currently 3
-            score += 80000
+            score += 8000
         elif window.count(player_num) == 2 and window.count(0) == 2:    #max 4 consec possible, currently 2
-            score += 50
+            score += 500
         elif window.count(player_num) == 1 and window.count(0) == 3:    #max 4 consec possible, currently 1
-            score += 40
-        elif window.count(player_num) == 3 and window.count(0) == 0:    #max 3 consec possible, currently 3
+            score += 400
+        elif window.count(player_num) == 3 and window.count(0) == 0:    #max 3 consec possible, currently 3 
             score += 30
         elif window.count(player_num) == 2 and window.count(0) == 1:    #max 3 consec possible, currently 2
             score += 25
@@ -121,6 +120,10 @@ class AIPlayer:
 
         #beech mein gap is better than consec gap
         return score
+
+    def evaluate_popouts (self, state, player_num):
+        board, popouts = state
+
 
     def evaluate_box(self, box, player_num):
         if box.count(player_num) == len(box):
@@ -230,8 +233,16 @@ class AIPlayer:
         if depth==0:
             return self.eval(board, depth)
         else:
+            local_start_popping = False
+            m,n = board.shape
+            unique, counts = np.unique(board, return_counts=True)
+            num = dict(zip(unique, counts))
+            if 0 in num and num[0]<=m*n//2:
+                local_start_popping = True
+
+            #If in the state reached during minimax, the number of pieces crosses half, popping can occur
             if player==1:
-                valid_moves = self.get_valid_actions(self.player_number, state)
+                valid_moves = self.get_valid_actions(self.player_number, state, local_start_popping)
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
 
@@ -248,7 +259,7 @@ class AIPlayer:
 
             else:
                 minEval = inf
-                valid_moves = self.get_valid_actions(2 if self.player_number==1 else 1, state)
+                valid_moves = self.get_valid_actions(2 if self.player_number==1 else 1, state, local_start_popping)
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
 
@@ -273,7 +284,7 @@ class AIPlayer:
             self.start_popping = True
         action_best = None
 
-        valid_actions = self.get_valid_actions(self.player_number,state)
+        valid_actions = self.get_valid_actions(self.player_number,state,False)
         
         if len(valid_actions) >= 8:
             depth = 2
