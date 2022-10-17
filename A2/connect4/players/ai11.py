@@ -7,7 +7,7 @@ from connect4.utils import Integer
 import time
 
 class AIPlayer:
-    win_pts = [0, 2, 8, 18, 1000]
+    win_pts = [0, 2, 8, 50, 1000]
     best_move = (0,False)
     start_popping = False
      
@@ -69,7 +69,6 @@ class AIPlayer:
                 i = k - j
                 diag.append(board[i, j])
             yield diag
-
 
     def get_diagonals_secondary(self, board: np.array) -> List[int]:
         m, n = board.shape
