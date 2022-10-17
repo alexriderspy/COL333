@@ -4,7 +4,7 @@ import numpy as np
 import copy
 from typing import List, Tuple, Dict, Union
 from connect4.utils import Integer
-
+import time
 
 class AIPlayer:
     win_pts = [0, 2, 8, 18, 1000]
@@ -264,8 +264,7 @@ class AIPlayer:
                 return minEval
 
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
-        
-        depth = 3
+        depth = 2
         alpha = -inf
         beta = inf
         board = state[0]
@@ -277,8 +276,7 @@ class AIPlayer:
         action_best = None
 
         valid_actions = self.get_valid_actions(self.player_number,state)
-        print(valid_actions)
-        
+
         value_of_best_action = -inf
         for action in valid_actions:
             st = self.perform_action(self.player_number, action, state)
