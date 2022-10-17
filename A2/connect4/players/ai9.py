@@ -98,7 +98,7 @@ class AIPlayer:
         return board, num_popouts
 
     def eval(self,state):
-        return self.get_pts(self.player_number,state[0])-self.get_pts(2 if self.player_number == 1 else 1,state[0])
+        return 2*self.get_pts(self.player_number,state[0])-self.get_pts(2 if self.player_number == 1 else 1,state[0])
 
     def minimax(self, i, state, depth, alpha, beta):
         if i==2:
@@ -144,7 +144,7 @@ class AIPlayer:
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
         #order valid actions
-        if len(valid_actions) > 5:
+        if len(valid_actions) > 7:
             valid_actions = self.order_valid_actions(valid_actions)
         print(valid_actions)
         if self.player_number == 2:
