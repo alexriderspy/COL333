@@ -97,19 +97,24 @@ class AIPlayer:
             num_popouts[player_num].decrement()
         return board, num_popouts
 
+    def eval(self,state):
+        return self.get_pts(self.player_number,state[0])-self.get_pts(2 if self.player_number == 1 else 1,state[0])
+
     def minimax(self, i, state, depth, alpha, beta):
         if i==2:
             if depth >= self.depth or len(get_valid_actions(2 if self.player_number == 1 else 1,state)) == 0:
-                return self.get_pts(self.player_number,state[0])-self.get_pts(2 if self.player_number == 1 else 1,state[0])
+
+                return self.eval(state)
             return self.min_val(state,depth,alpha,beta)
         else:
             if depth >= self.depth or len(get_valid_actions(self.player_number,state)) == 0:
-                return self.get_pts(self.player_number,state[0])-self.get_pts(2 if self.player_number == 1 else 1,state[0])
+                return self.eval(state)
             return self.max_val(state,depth,alpha,beta)
 
     def max_val(self,state,depth,alpha,beta):
         maxEval = -inf
         valid_moves = get_valid_actions(self.player_number,state)
+        random.shuffle(valid_moves)
         for move in valid_moves:
             child_state = self.perform_action(self.player_number, move, state)
             maxEval = max(maxEval, self.minimax(2,child_state, depth+1, alpha, beta))
@@ -121,6 +126,7 @@ class AIPlayer:
     def min_val(self,state,depth,alpha,beta):
         minEval = inf
         valid_moves = get_valid_actions(2 if self.player_number == 1 else 1,state)
+        random.shuffle(valid_moves)
         for move in valid_moves:
             child_state = self.perform_action(2 if self.player_number == 1 else 1, move, state)
             minEval = min(minEval, self.minimax(1,child_state, depth+1, alpha, beta))
@@ -129,8 +135,18 @@ class AIPlayer:
             beta = min(beta, minEval)
         return minEval
 
+    def order_valid_actions(self,valid_actions):
+        tmp = sorted(valid_actions)
+        l = len(valid_actions)
+        valid_actions = tmp[l//2:] + tmp[0:l//2]
+        return valid_actions
+
     def get_intelligent_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
         valid_actions = get_valid_actions(self.player_number,state)
+        #order valid actions
+        if len(valid_actions) > 5:
+            valid_actions = self.order_valid_actions(valid_actions)
+        print(valid_actions)
         if self.player_number == 2:
             if len(valid_actions) >= 8:
                 self.depth = 3
