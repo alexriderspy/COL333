@@ -12,7 +12,8 @@ class AIPlayer:
     best_move = (0,False)
     start_popping = False
     memo = dict()
-    transposition_table = dict()
+    transposition_table_pn = dict()
+    transposition_table_not_pn = dict()
 
     terminate = False
     def __init__(self, player_number: int, time: int):
@@ -256,11 +257,17 @@ class AIPlayer:
 
     #looking at ultimate position, not first kya khela, baad mein kya khela
     def minimax(self, state, player, depth, alpha, beta):
-        def func(x,y):
-            if x not in self.transposition_table or y not in self.transposition_table:
+        def func_pn(x,y):
+            if x not in self.transposition_table_pn or y not in self.transposition_table_pn:
                 return 0
             else:
-                return self.transposition_table[y][0] - self.transposition_table[x][0]
+                return self.transposition_table_pn[y][0] - self.transposition_table_pn[x][0]
+
+        def func_not_pn(x,y):
+            if x not in self.transposition_table_not_pn or y not in self.transposition_table_not_pn:
+                return 0
+            else:
+                return self.transposition_table_not_pn[y][0] - self.transposition_table_not_pn[x][0]
 
         board = state[0]
         curr = time.time() - self.start_time
@@ -284,18 +291,18 @@ class AIPlayer:
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
 
-                valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func))
+                valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func_pn))
                 maxEval = -inf
                 for move in valid_moves:
                     if self.terminate==False:
                         child_state = self.perform_action(self.player_number, move, state)
                         str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
                         popouts = str(child_state[1])
-                        if (str_board,popouts) in self.transposition_table and self.transposition_table[(str_board,popouts)][1] >= depth-1:
-                            eva = self.transposition_table[(str_board,popouts)][0]
+                        if (str_board,popouts) in self.transposition_table_pn and self.transposition_table_pn[(str_board,popouts)][1] >= depth-1:
+                            eva = self.transposition_table_pn[(str_board,popouts)][0]
                         else:
                             eva = self.minimax(child_state, 2, depth-1, alpha, beta)
-                            self.transposition_table[(str_board,popouts)] = (eva,depth-1)
+                            self.transposition_table_pn[(str_board,popouts)] = (eva,depth-1)
 
                         maxEval = max(maxEval, eva)
                         alpha = max(alpha, maxEval)
@@ -312,7 +319,7 @@ class AIPlayer:
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
                 
-                valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func))
+                valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func_not_pn))
 
                 for move in valid_moves:
                     if self.terminate==False:
@@ -320,11 +327,11 @@ class AIPlayer:
 
                         str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
                         popouts = str(child_state[1])
-                        if (str_board,popouts) in self.transposition_table and self.transposition_table[(str_board,popouts)][1] >= depth-1:
-                            eva = self.transposition_table[(str_board,popouts)][0]
+                        if (str_board,popouts) in self.transposition_table_not_pn and self.transposition_table_not_pn[(str_board,popouts)][1] >= depth-1:
+                            eva = self.transposition_table_not_pn[(str_board,popouts)][0]
                         else:
                             eva = self.minimax(child_state, 2, depth-1, alpha, beta)
-                            self.transposition_table[(str_board,popouts)] = (eva,depth-1)
+                            self.transposition_table_not_pn[(str_board,popouts)] = (eva,depth-1)
 
                         minEval = min(minEval, eva)
                         beta = min(beta, minEval)
@@ -344,7 +351,7 @@ class AIPlayer:
         m,n = board.shape
         unique, counts = np.unique(board, return_counts=True)
         num = dict(zip(unique, counts))
-        if (0 in num and num[0]<=m*n//2) or (0 not in num and self.start_popping == False):
+        if (0 in num and num[0]<=(m*n)//2) or (0 not in num and self.start_popping == False):
             self.start_popping = True
         action_best = None
 
@@ -406,7 +413,7 @@ class AIPlayer:
                 depth = 7
             else:
                 depth = 8
-        if (0 in num and num[0]<=m*n//10) :
+        if (0 in num and num[0]<=(m*n)//10) :
             depth = 7
         
         
@@ -417,11 +424,11 @@ class AIPlayer:
 
                 str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
                 popouts = str(child_state[1])
-                if (str_board,popouts) in self.transposition_table and self.transposition_table[(str_board,popouts)][1] >= depth-1:
-                    eva = self.transposition_table[(str_board,popouts)][0]
+                if (str_board,popouts) in self.transposition_table_pn and self.transposition_table_pn[(str_board,popouts)][1] >= depth-1:
+                    eva = self.transposition_table_pn[(str_board,popouts)][0]
                 else:
                     eva = self.minimax(child_state, 2, depth-1, alpha, beta)
-                    self.transposition_table[(str_board,popouts)] = (eva,depth-1)
+                    self.transposition_table_pn[(str_board,popouts)] = (eva,depth-1)
 
                 if eva > value_of_best_action:
                     value_of_best_action = eva
