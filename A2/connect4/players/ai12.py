@@ -5,6 +5,7 @@ import copy
 from typing import List, Tuple, Dict, Union
 from connect4.utils import Integer, get_diagonals_primary, get_diagonals_secondary
 import time
+import functools
 
 class AIPlayer:
     win_pts = [0, 2, 8, 50, 1000]
@@ -252,8 +253,15 @@ class AIPlayer:
             num_popouts[player_num].decrement()
         return board, num_popouts
 
+
     #looking at ultimate position, not first kya khela, baad mein kya khela
     def minimax(self, state, player, depth, alpha, beta):
+        def func(x,y):
+            if x not in self.transposition_table or y not in self.transposition_table:
+                return 0
+            else:
+                return self.transposition_table[y][0] - self.transposition_table[x][0]
+
         board = state[0]
         curr = time.time() - self.start_time
         if curr>=self.time - 0.5:
@@ -266,20 +274,29 @@ class AIPlayer:
             m,n = board.shape
             unique, counts = np.unique(board, return_counts=True)
             num = dict(zip(unique, counts))
-            if 0 in num and num[0]<=m*n//2:
+            if 0 in num and num[0]<=(m*n)//2:
                 local_start_popping = True
 
             #If in the state reached during minimax, the number of pieces crosses half, popping can occur
             if player==1:
                 valid_moves = self.get_valid_actions(self.player_number, state, local_start_popping)
+
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
 
+                valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func))
                 maxEval = -inf
                 for move in valid_moves:
                     if self.terminate==False:
                         child_state = self.perform_action(self.player_number, move, state)
-                        eva = self.minimax(child_state, 2, depth-1, alpha, beta)
+                        str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
+                        popouts = str(child_state[1])
+                        if (str_board,popouts) in self.transposition_table and self.transposition_table[(str_board,popouts)][1] >= depth-1:
+                            eva = self.transposition_table[(str_board,popouts)][0]
+                        else:
+                            eva = self.minimax(child_state, 2, depth-1, alpha, beta)
+                            self.transposition_table[(str_board,popouts)] = (eva,depth-1)
+
                         maxEval = max(maxEval, eva)
                         alpha = max(alpha, maxEval)
                         if beta<=alpha:
@@ -294,11 +311,21 @@ class AIPlayer:
                 valid_moves = self.get_valid_actions(2 if self.player_number==1 else 1, state, local_start_popping)
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
+                
+                valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func))
 
                 for move in valid_moves:
                     if self.terminate==False:
                         child_state = self.perform_action(2 if self.player_number==1 else 1, move, state)
-                        eva = self.minimax(child_state, 1, depth-1, alpha, beta)
+
+                        str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
+                        popouts = str(child_state[1])
+                        if (str_board,popouts) in self.transposition_table and self.transposition_table[(str_board,popouts)][1] >= depth-1:
+                            eva = self.transposition_table[(str_board,popouts)][0]
+                        else:
+                            eva = self.minimax(child_state, 2, depth-1, alpha, beta)
+                            self.transposition_table[(str_board,popouts)] = (eva,depth-1)
+
                         minEval = min(minEval, eva)
                         beta = min(beta, minEval)
                         if beta<=alpha:
@@ -386,12 +413,22 @@ class AIPlayer:
         while self.terminate == False:
             value_of_best_action = -inf
             for action in valid_actions:
-                st = self.perform_action(self.player_number, action, state)
-                val = self.minimax(st,2,depth,alpha,beta)
-                if val > value_of_best_action:
-                    value_of_best_action = val
+                child_state = self.perform_action(self.player_number, action, state)
+
+                str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
+                popouts = str(child_state[1])
+                if (str_board,popouts) in self.transposition_table and self.transposition_table[(str_board,popouts)][1] >= depth-1:
+                    eva = self.transposition_table[(str_board,popouts)][0]
+                else:
+                    eva = self.minimax(child_state, 2, depth-1, alpha, beta)
+                    self.transposition_table[(str_board,popouts)] = (eva,depth-1)
+
+                if eva > value_of_best_action:
+                    value_of_best_action = eva
                     action_best = action
             depth += 1
+            if depth > 20:
+                break
         return action_best
 
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
