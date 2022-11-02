@@ -1,43 +1,146 @@
-12 12
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 0 0 
-9
-{"player": 1, "move": 6, "is_pop": false}
-{"player": 2, "move": 6, "is_pop": false}
-{"player": 1, "move": 6, "is_pop": false}
-{"player": 2, "move": 6, "is_pop": false}
-{"player": 1, "move": 6, "is_pop": false}
-{"player": 2, "move": 6, "is_pop": false}
-{"player": 1, "move": 6, "is_pop": false}
-{"player": 2, "move": 5, "is_pop": false}
+Game Over
+Player 1 Score: 60
+Player 2 Score: 33
+Margin difference: 81.81818181818183
 {"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 5, "is_pop": false}
-{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 10, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
 {"player": 2, "move": 4, "is_pop": false}
 {"player": 1, "move": 4, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": true}
 {"player": 2, "move": 3, "is_pop": false}
-{"player": 1, "move": 5, "is_pop": false}
-{"player": 2, "move": 7, "is_pop": false}
-{"player": 1, "move": 3, "is_pop": false}
-{"player": 2, "move": 4, "is_pop": false}
-{"player": 1, "move": 7, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": true}
 {"player": 2, "move": 3, "is_pop": false}
-{"player": 1, "move": 8, "is_pop": false}
+{"player": 1, "move": 10, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": true}
 {"player": 2, "move": 5, "is_pop": false}
 {"player": 1, "move": 3, "is_pop": false}
-{"player": 2, "move": 7, "is_pop": false}
 {"player": 1, "move": 7, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
 {"player": 2, "move": 8, "is_pop": false}
 {"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": true}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
 {"player": 2, "move": 8, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
 {"player": 1, "move": 5, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 0, "is_pop": true}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": true}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 10, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 1, "move": 2, "is_pop": true}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": true}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": true}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 11, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": true}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": true}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": true}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": true}
+{"player": 1, "move": 4, "is_pop": true}
+{"player": 2, "move": 5, "is_pop": true}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": true}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": true}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": true}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": true}
+{"player": 1, "move": 0, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 1, "move": 10, "is_pop": true}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": true}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 2, "move": 10, "is_pop": false}
+{"player": 1, "move": 1, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 11, "is_pop": false}
+{"player": 1, "move": 0, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 0, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 11, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 0, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 2, "move": 11, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 2, "move": 2, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": 10, "is_pop": false}
+{"player": 1, "move": 9, "is_pop": false}
+{"player": 1, "move": "invalid", "is_pop": "invalid"}
+{"player": 2, "move": 1, "is_pop": false}
+{"player": 2, "move": 11, "is_pop": false}
+{"player": 2, "move": 9, "is_pop": false}

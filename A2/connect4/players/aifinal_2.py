@@ -301,7 +301,7 @@ class AIPlayer:
                 depth = 1
             elif len(valid_actions)  >= 16:
                 depth = 2
-            elif len(valid_actions) >= 8:
+            elif len(valid_actions) >= 7:
                 depth = 2
             elif len(valid_actions) >= 4:
                 depth = 3
@@ -312,18 +312,18 @@ class AIPlayer:
                 depth = 1
             elif len(valid_actions)  >= 16:
                 depth = 2
-            elif len(valid_actions) >= 8:
+            elif len(valid_actions) >= 7:
                 depth = 4
             elif len(valid_actions) >= 4:
                 depth = 5
             else:
-                depth = 7
+                depth = 6
         elif self.time >=13 and self.time <= 16:
             if len(valid_actions) >= 19:
                 depth = 2
             elif len(valid_actions)  >= 16:
                 depth = 3
-            elif len(valid_actions) >= 8:
+            elif len(valid_actions) >= 7:
                 depth = 4
             elif len(valid_actions) >= 4:
                 depth = 5
@@ -334,14 +334,14 @@ class AIPlayer:
                 depth = 2
             elif len(valid_actions)  >= 16:
                 depth = 3
-            elif len(valid_actions) >= 8:
+            elif len(valid_actions) >= 7:
                 depth = 5
             elif len(valid_actions) >= 4:
                 depth = 6
             else:
                 depth = 7
         if (0 in num and num[0]<=(m*n)//10) :
-            depth = 7
+            depth = 0
         
         
         while self.terminate == False:
@@ -349,7 +349,7 @@ class AIPlayer:
             for action in valid_actions:
                 child_state = self.perform_action(self.player_number, action, state)
 
-                eva = self.minimax(child_state, 2, depth-1, alpha, beta)
+                eva = self.minimax(child_state, 2, depth, alpha, beta)
 
                 if eva > value_of_best_action:
                     value_of_best_action = eva
