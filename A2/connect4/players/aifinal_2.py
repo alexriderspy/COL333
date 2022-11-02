@@ -15,6 +15,7 @@ class AIPlayer:
     transposition_table_pn = dict()
     transposition_table_not_pn = dict()
 
+    greedy = False
     terminate = False
     def __init__(self, player_number: int, time: int):
         """
@@ -44,63 +45,15 @@ class AIPlayer:
             for col in range(n):
                 if col % 2 == player_number - 1:
                     # First player is allowed only even columns and second player is allowed only odd columns
-                    if board[:, col].any():
+                    column = list(board[:, col])
+                    ones = column.count(1)
+                    twos = column.count(2)
+                    all_ones = ones>0 and twos==0
+                    all_twos = ones==0 and twos>0
+                    all_same = all_ones or all_twos
+                    if not(all_same):
                         valid_moves.append((col, True))
         return valid_moves
-
-    def get_score(self, player_number: int, row: Union[np.array, List[int]]):
-        score = 0
-        n = len(row)
-        j = 0
-        while j < n:
-            if row[j] == player_number:
-                count = 0
-                while j < n and row[j] == player_number:
-                    count += 1
-                    j += 1
-                #Finding continuous dots of each player
-                k = len(self.win_pts) - 1
-                score += self.win_pts[count % k] + (count // k) * self.win_pts[k]
-            else:
-                j += 1
-        return score
-
-
-    def get_diagonals_primary(self, board: np.array) -> List[int]:
-        m, n = board.shape
-        for k in range(n + m - 1):
-            diag = []
-            for j in range(max(0, k - m + 1), min(n, k + 1)):
-                i = k - j
-                diag.append(board[i, j])
-            yield diag
-
-    def get_diagonals_secondary(self, board: np.array) -> List[int]:
-        m, n = board.shape
-        for k in range(n + m - 1):
-            diag = []
-            for x in range(max(0, k - m + 1), min(n, k + 1)):
-                j = n - 1 - x
-                i = k - x
-                diag.append(board[i][j])
-            yield diag
-
-    def get_pts(self, player_number: int, board: np.array) -> int:
-        score = 0
-        m, n = board.shape
-        # score in rows
-        for i in range(m):
-            score += self.get_score(player_number, board[i])
-        # score in columns
-        for j in range(n):
-            score += self.get_score(player_number, board[:, j])
-        # scores in diagonals_primary
-        for diag in self.get_diagonals_primary(board):
-            score += self.get_score(player_number, diag)
-        # scores in diagonals_secondary
-        for diag in self.get_diagonals_secondary(board):
-            score += self.get_score(player_number, diag)
-        return score
 
     def evaluate_window(self, window, window_size,player_num):
         score = 0
@@ -165,7 +118,7 @@ class AIPlayer:
             else:
                 return 0
 
-    def score_position(self, board, player_num, window_size, depth):
+    def score_position(self, board, player_num):
         score = 0
         rows, cols = board.shape
         ## Score columns for distance from centre
@@ -230,7 +183,7 @@ class AIPlayer:
         return score
 
     def eval(self, board, depth):
-        score = self.score_position(board, self.player_number, 4, depth) - self.score_position(board, 2 if self.player_number == 1 else 1, 4, depth)
+        score = self.score_position(board, self.player_number) - self.score_position(board, 2 if self.player_number == 1 else 1)
         return score
 
     def perform_action(self, player_num, action, state):
@@ -257,21 +210,10 @@ class AIPlayer:
 
     #looking at ultimate position, not first kya khela, baad mein kya khela
     def minimax(self, state, player, depth, alpha, beta):
-        def func_pn(x,y):
-            if x not in self.transposition_table_pn or y not in self.transposition_table_pn:
-                return 0
-            else:
-                return self.transposition_table_pn[y][0] - self.transposition_table_pn[x][0]
-
-        def func_not_pn(x,y):
-            if x not in self.transposition_table_not_pn or y not in self.transposition_table_not_pn:
-                return 0
-            else:
-                return self.transposition_table_not_pn[y][0] - self.transposition_table_not_pn[x][0]
 
         board = state[0]
         curr = time.time() - self.start_time
-        if curr>=self.time - 0.5:
+        if curr>=self.time*0.8:
             self.terminate = True
             return self.eval(board, depth)
         elif depth==0:
@@ -291,7 +233,6 @@ class AIPlayer:
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
 
-                #valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func_pn))
                 maxEval = -inf
                 for move in valid_moves:
                     if self.terminate==False:
@@ -313,13 +254,11 @@ class AIPlayer:
                 if len(valid_moves)==0:
                     return self.eval(board, depth)
                 
-                #valid_moves = sorted(valid_moves, key=functools.cmp_to_key(func_not_pn))
-
                 for move in valid_moves:
                     if self.terminate==False:
                         child_state = self.perform_action(2 if self.player_number==1 else 1, move, state)
 
-                        eva = self.minimax(child_state, 2, depth-1, alpha, beta)
+                        eva = self.minimax(child_state, 1, depth-1, alpha, beta)
 
                         minEval = min(minEval, eva)
                         beta = min(beta, minEval)
@@ -346,7 +285,7 @@ class AIPlayer:
         
         valid_actions = self.get_valid_actions(self.player_number,state,False)
         
-        if self.time >= 5 and self.time <= 6:
+        if self.time >= 0 and self.time <= 6:
             if len(valid_actions) >= 16:
                 depth = 0
             elif len(valid_actions)  >= 12:
@@ -356,18 +295,18 @@ class AIPlayer:
             elif len(valid_actions) >= 4:
                 depth = 3
             else:
-                depth = 5
+                depth = 4
         elif self.time >=7 and self.time <= 8:
             if len(valid_actions) >= 19:
                 depth = 1
             elif len(valid_actions)  >= 16:
                 depth = 2
             elif len(valid_actions) >= 8:
-                depth = 3
+                depth = 2
             elif len(valid_actions) >= 4:
-                depth = 4
+                depth = 3
             else:
-                depth = 6
+                depth = 4
         elif self.time >=9 and self.time <= 12:
             if len(valid_actions) >= 19:
                 depth = 1
@@ -387,9 +326,9 @@ class AIPlayer:
             elif len(valid_actions) >= 8:
                 depth = 4
             elif len(valid_actions) >= 4:
-                depth = 6
+                depth = 5
             else:
-                depth = 8
+                depth = 6
         elif self.time >=17 and self.time <= 20:
             if len(valid_actions) >= 19:
                 depth = 2
@@ -398,9 +337,9 @@ class AIPlayer:
             elif len(valid_actions) >= 8:
                 depth = 5
             elif len(valid_actions) >= 4:
-                depth = 7
+                depth = 6
             else:
-                depth = 8
+                depth = 7
         if (0 in num and num[0]<=(m*n)//10) :
             depth = 7
         
@@ -410,13 +349,7 @@ class AIPlayer:
             for action in valid_actions:
                 child_state = self.perform_action(self.player_number, action, state)
 
-                str_board = ''.join(''.join(str(x) for x in y) for y in child_state[0])
-                popouts = str(child_state[1])
-                if (str_board,popouts) in self.transposition_table_pn and self.transposition_table_pn[(str_board,popouts)][1] >= depth-1 and False:
-                    eva = self.transposition_table_pn[(str_board,popouts)][0]
-                else:
-                    eva = self.minimax(child_state, 2, depth-1, alpha, beta)
-                    #self.transposition_table_pn[(str_board,popouts)] = (eva,depth-1)
+                eva = self.minimax(child_state, 2, depth-1, alpha, beta)
 
                 if eva > value_of_best_action:
                     value_of_best_action = eva
@@ -426,9 +359,102 @@ class AIPlayer:
                 break
         return action_best
 
+    def eval2(self, board, alpha):
+        score = alpha*self.score_position(board, self.player_number) - (1-alpha)*self.score_position(board, 2 if self.player_number == 1 else 1)
+        return score
+
+    def expectimax(self, state, player, depth):
+        board = state[0]
+        m,n = board.shape
+        if m*n==144:
+            alpha = 0.05 if self.greedy==False else 0.5
+        elif m*n==132:
+            alpha=0.05 if self.greedy==False else 0.5
+        elif m*n>100:
+            alpha = 0.1
+        else:
+            alpha = 0.2
+        curr = time.time() - self.start_time
+        if curr>=self.time*0.8:
+            self.terminate = True
+            return self.eval2(board, alpha)
+        elif depth==0:
+            return self.eval2(board, alpha)
+        else:
+            local_start_popping = True
+
+            #If in the state reached during minimax, the number of pieces crosses half, popping can occur
+            if player==1:
+                valid_moves = self.get_valid_actions(self.player_number, state, local_start_popping)
+                random.shuffle(valid_moves)
+                if len(valid_moves)==0:
+                    return self.eval2(board, alpha)
+
+                maxEval = -inf
+                for move in valid_moves:
+                    if self.terminate==False:
+                        child_state = self.perform_action(self.player_number, move, state)
+                        eva = self.expectimax(child_state, 2, depth-1)
+                        maxEval = max(maxEval, eva)
+                    else:
+                        break
+
+                return maxEval
+
+            else:
+                expEval = 0.0
+                valid_moves = self.get_valid_actions(2 if self.player_number==1 else 1, state,local_start_popping)
+                random.shuffle(valid_moves)
+                if len(valid_moves)==0:
+                    return self.eval2(board, alpha)
+                l = 0
+                for move in valid_moves:
+                    if self.terminate==False:
+                        child_state = self.perform_action(2 if self.player_number==1 else 1, move, state)
+                        eva = self.expectimax(child_state, 1, depth-1)
+                        expEval +=  eva
+                        l += 1
+                    else:
+                        break
+                expEval /= l
+                return expEval
+
     def get_expectimax_move(self, state: Tuple[np.array, Dict[int, Integer]]) -> Tuple[int, bool]:
-        raise NotImplementedError('Whoops I don\'t know what to do')
 
+        self.start_time = time.time()
+        board = state[0]
+        m,n = board.shape
+        unique, counts = np.unique(board, return_counts=True)
+        num = dict(zip(unique, counts))
+        if (0 in num and num[0]<=(m*n)//2) or (0 not in num):
+            self.greedy = True
+        
+        self.start_popping = True
+        action_best = None
 
-#higher scoring if dot is placed in center column
-#case 1 popouts were originally 6
+        valid_actions = self.get_valid_actions(self.player_number,state, False)
+        random.shuffle(valid_actions)
+        if len(valid_actions) >= 16:
+            depth = 0
+        elif len(valid_actions)  >= 12:
+            depth = 1
+        elif len(valid_actions) >= 7:
+            depth = 2
+        else:
+            depth = 3
+        
+        
+        while self.terminate == False:
+            value_of_best_action = -inf
+            for action in valid_actions:
+                child_state = self.perform_action(self.player_number, action, state)
+
+                eva = self.expectimax(child_state, 2,depth)
+
+                if eva > value_of_best_action:
+                    value_of_best_action = eva
+                    action_best = action
+            depth += 1
+            if depth > 25:
+                break
+        return action_best

@@ -1,4 +1,43 @@
-Game Over
-Player 1 Score: 141
-Player 2 Score: 138
-Margin difference: 2.1739130434782608
+12 12
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 
+9
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 6, "is_pop": false}
+{"player": 1, "move": 6, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 4, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 4, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 3, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 5, "is_pop": false}
+{"player": 1, "move": 3, "is_pop": false}
+{"player": 2, "move": 7, "is_pop": false}
+{"player": 1, "move": 7, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 8, "is_pop": false}
+{"player": 2, "move": 8, "is_pop": false}
+{"player": 1, "move": 5, "is_pop": false}
