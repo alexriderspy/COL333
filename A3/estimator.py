@@ -1,6 +1,8 @@
 import util 
 from util import Belief, pdf 
 from engine.const import Const
+from math import sin,cos
+import random
 
 # Class: Estimator
 #----------------------
@@ -37,6 +39,21 @@ class Estimator(object):
     def estimate(self, posX: float, posY: float, observedDist: float, isParked: bool) -> None:
         # BEGIN_YOUR_CODE
 
+        numRows = self.belief.numRows
+        numCols = self.belief.numCols
+
+        sign = [1,-1]
+        for _ in range(10000):
+            val = random.random()
+            random.shuffle(sign)
+            X = sign[0]*observedDist*sin(val) + posX
+            Y = sign[0]*observedDist*cos(val) + posY
+            row = util.yToRow(Y)
+            col = util.xToCol(X)
+            if row < numRows and col < numCols:
+                self.belief.addProb(row,col,10000000)
+
+        self.belief.normalize()
         # END_YOUR_CODE
         return
   
