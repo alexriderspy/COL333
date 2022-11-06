@@ -41,6 +41,8 @@ class Estimator(object):
 
         numRows = self.belief.numRows
         numCols = self.belief.numCols
+        
+        std = Const.SONAR_STD
 
         sign = [1,-1]
         for _ in range(10000):
@@ -48,10 +50,17 @@ class Estimator(object):
             random.shuffle(sign)
             X = sign[0]*observedDist*sin(val) + posX
             Y = sign[0]*observedDist*cos(val) + posY
-            row = util.yToRow(Y)
-            col = util.xToCol(X)
-            if row < numRows and col < numCols:
-                self.belief.addProb(row,col,10000000)
+
+            rowSouth = util.yToRow(Y+std)
+            rowNorth = util.yToRow(Y-std)
+
+            colEast = util.xToCol(X+std)
+            colWest = util.xToCol(X-std)
+
+            for col in range(colWest,colEast+1):
+                for row in range(rowNorth, rowSouth+1):
+                    if row < numRows and col < numCols:
+                        self.belief.addProb(row,col,100000)
 
         self.belief.normalize()
         # END_YOUR_CODE
