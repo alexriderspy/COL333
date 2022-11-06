@@ -57,10 +57,9 @@ class Estimator(object):
             colEast = util.xToCol(X+std)
             colWest = util.xToCol(X-std)
 
-            for col in range(colWest,colEast+1):
-                for row in range(rowNorth, rowSouth+1):
-                    if row < numRows and col < numCols:
-                        self.belief.addProb(row,col,100000)
+            for col in range(colWest,min(numCols,colEast+1)):
+                for row in range(rowNorth, min(numRows,rowSouth+1)):
+                    self.belief.addProb(row,col,100000)
 
         self.belief.normalize()
         # END_YOUR_CODE
