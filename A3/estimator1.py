@@ -41,15 +41,18 @@ class Estimator(object):
 
         numRows = self.belief.numRows
         numCols = self.belief.numCols
-        
+
+        # print(self.transProb)        
         std = Const.SONAR_STD
 
-        sign = [1,-1]
+        val = 0.0
+        delta = 0.0006
         for _ in range(10000):
-            val = random.random()
-            random.shuffle(sign)
-            X = sign[0]*observedDist*sin(val) + posX
-            Y = sign[0]*observedDist*cos(val) + posY
+
+            X = observedDist*cos(val) + posX
+            Y = observedDist*sin(val) + posY
+
+            val += delta
 
             rowSouth = util.yToRow(Y+std)
             rowNorth = util.yToRow(Y-std)
@@ -57,10 +60,10 @@ class Estimator(object):
             colEast = util.xToCol(X+std)
             colWest = util.xToCol(X-std)
 
-            for col in range(colWest,min(numCols,colEast+1)):
-                for row in range(rowNorth, min(numRows,rowSouth+1)):
+            for row in range(max(0,rowNorth), min(numRows,rowSouth+1)):
+                for col in range(max(0,colWest), min(numCols,colEast+1)):
                     self.belief.addProb(row,col,100000)
-
+        
         self.belief.normalize()
         # END_YOUR_CODE
         return

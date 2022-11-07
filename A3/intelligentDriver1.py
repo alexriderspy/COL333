@@ -125,6 +125,7 @@ class IntelligentDriver(Junior):
         # BEGIN_YOUR_CODE 
 
         # END_YOUR_CODE
+        print(goalPos)
         return goalPos, moveForward
 
     # DO NOT MODIFY THIS METHOD !
