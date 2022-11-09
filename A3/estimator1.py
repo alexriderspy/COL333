@@ -1,7 +1,7 @@
 import util 
 from util import Belief, pdf 
 from engine.const import Const
-from math import sin,cos
+from math import sin,cos,sqrt
 import random
 
 # Class: Estimator
@@ -39,33 +39,84 @@ class Estimator(object):
     def estimate(self, posX: float, posY: float, observedDist: float, isParked: bool) -> None:
         # BEGIN_YOUR_CODE
 
+        # numRows = self.belief.numRows
+        # numCols = self.belief.numCols
+
+        # # print(self.transProb)        
+        # std = Const.SONAR_STD
+
+        # val = 0.0
+        # delta = 0.0006
+        # for _ in range(10000):
+
+        #     X = observedDist*cos(val) + posX
+        #     Y = observedDist*sin(val) + posY
+
+        #     val += delta
+
+        #     rowSouth = util.yToRow(Y+std)
+        #     rowNorth = util.yToRow(Y-std)
+
+        #     colEast = util.xToCol(X+std)
+        #     colWest = util.xToCol(X-std)
+
+        #     for row in range(max(0,rowNorth), min(numRows,rowSouth+1)):
+        #         for col in range(max(0,colWest), min(numCols,colEast+1)):
+        #             self.belief.addProb(row,col,100000)
+        
+        # self.belief.normalize()
+
         numRows = self.belief.numRows
         numCols = self.belief.numCols
 
         # print(self.transProb)        
         std = Const.SONAR_STD
 
-        val = 0.0
-        delta = 0.0006
-        for _ in range(10000):
-
-            X = observedDist*cos(val) + posX
-            Y = observedDist*sin(val) + posY
-
-            val += delta
-
-            rowSouth = util.yToRow(Y+std)
-            rowNorth = util.yToRow(Y-std)
-
-            colEast = util.xToCol(X+std)
-            colWest = util.xToCol(X-std)
-
-            for row in range(max(0,rowNorth), min(numRows,rowSouth+1)):
-                for col in range(max(0,colWest), min(numCols,colEast+1)):
-                    self.belief.addProb(row,col,100000)
+        trans_prob = self.transProb
         
+        #setting the belief according to exact inference
+
+        alpha = 100
+        beta = 4
+        for _ in range(100):
+            for row in range(numRows):
+                for col in range(numCols):
+                    prob = 100.0
+                    if row+1 < numRows:
+                        if ((row+1,col),(row,col)) in trans_prob:
+                            prob += trans_prob[(row+1,col),(row,col)]*self.belief.getProb(row+1,col)*alpha
+                    if col+1 < numCols:
+                        if ((row,col+1),(row,col)) in trans_prob:
+                            prob += trans_prob[(row,col+1),(row,col)]*self.belief.getProb(row,col+1)*alpha
+                    if row-1 >= 0:
+                        if ((row-1,col),(row,col)) in trans_prob:
+                            prob += trans_prob[(row-1,col),(row,col)]*self.belief.getProb(row-1,col)*alpha
+                    if col-1 >= 0:
+                        if ((row,col-1),(row,col)) in trans_prob:
+                            prob += trans_prob[(row,col-1),(row,col)]*self.belief.getProb(row,col-1)*alpha
+                    
+                    if row+1 < numRows and col+1 < numCols:
+                        if ((row+1,col+1),(row,col)) in trans_prob:
+                            prob += trans_prob[((row+1,col+1),(row,col))]*self.belief.getProb(row+1,col+1)*alpha
+                    if row+1 < numRows and col-1 >=0:
+                        if ((row+1,col-1),(row,col)) in trans_prob:
+                            prob += trans_prob[((row+1,col-1),(row,col))]*self.belief.getProb(row+1,col-1)*alpha
+                    if row-1 >=0 and col+1 < numCols:
+                        if ((row-1,col+1),(row,col)) in trans_prob:
+                            prob += trans_prob[((row-1,col+1),(row,col))]*self.belief.getProb(row-1,col+1)*alpha
+                    if row-1 >= 0 and col-1 >= 0:
+                        if ((row-1,col-1),(row,col)) in trans_prob:
+                            prob += trans_prob[((row-1,col-1),(row,col))]*self.belief.getProb(row-1,col-1)*alpha
+                    
+
+                    if ((row,col),(row,col)) in trans_prob:
+                        prob += trans_prob[(row,col),(row,col)] * self.belief.getProb(row,col)*alpha
+                    
+                    prob = prob * (util.pdf(sqrt((util.colToX(col)-posX)**2 + (util.rowToY(row)-posY)**2),std,observedDist))*(1.0/beta)
+                    #print(prob)
+                    self.belief.setProb(row,col,prob)
+
         self.belief.normalize()
-        # END_YOUR_CODE
         return
   
     def getBelief(self) -> Belief:
