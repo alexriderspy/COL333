@@ -60,10 +60,11 @@ class IntelligentDriver(Junior):
         ## Get the tiles corresponding to the blocks (or obstacles):
         blocks = self.layout.getBlockData()
         blockTiles = []
+        print(blocks)
         for block in blocks:
             row1, col1, row2, col2 = block[1], block[0], block[3], block[2] 
             # some padding to ensure the AutoCar doesn't crash into the blocks due to its size. (optional)
-            row1, col1, row2, col2 = row1-1, col1-1, row2+1, col2+1
+            #row1, col1, row2, col2 = row1-1, col1-1, row2+1, col2+1
             blockWidth = col2-col1 
             blockHeight = row2-row1 
 
@@ -89,6 +90,7 @@ class IntelligentDriver(Junior):
             for tile in adjacentNodes:
                 edges.append((node, tile))
                 edges.append((tile, node))
+
         return Graph(nodes, edges)
 
     #######################################################################################
@@ -113,19 +115,62 @@ class IntelligentDriver(Junior):
         - You can explore some files "layout.py", "model.py", "controller.py", etc.
          to find some methods that might help in your implementation. 
         '''
+        def dist(pos1, pos2):
+            return pow(pos1[0]-pos2[0], 2) + pow(pos1[1] - pos2[1], 2)
+
+        goalPos = None # next tile 
         for checkPoint in self.checkPoints:
                 if checkPoint not in self.visited_checkPoints:
-                    goalPos = checkPoint # next tile
+                    checkPointPos = checkPoint # next tile
                     break 
         moveForward = True
+        #checkpoint pos is an integer tuple
 
-        currPos = self.getPos() # the current 2D location of the AutoCar (refer util.py to convert it to tile (or grid cell) coordinate)
-        if (util.yToRow(currPos[1]),util.xToCol(currPos[0])) == goalPos:
-            self.visited_checkPoints.append(goalPos)
-        # BEGIN_YOUR_CODE 
+        currPos = self.pos # the current 2D location of the AutoCar (refer util.py to convert it to tile (or grid cell) coordinate)
+        #currPos is a float tuple, same as self.pos
+        row = util.yToRow(currPos[1])
+        col = util.xToCol(currPos[0])
+        curr_node = (row, col)
+        #curr_node is an integer tuple
+        possible_positions = []
+        if curr_node == checkPointPos:
+            self.visited_checkPoints.append(checkPointPos)
 
-        # END_YOUR_CODE
-        print(goalPos)
+        edges = self.worldGraph.edges
+        #an edge is an integer tuple
+        for edge in edges:
+            if edge[0]== curr_node:
+                possible_positions.append(edge[1])
+
+        vals = []
+        vals2 = []
+        vals3 = []
+        vals4 = []
+        threshold = 0.00001                 #try changing this
+        for position in possible_positions:
+            row, col = position
+            prob = 0
+            for belief_car in beliefOfOtherCars:
+                prob = max(prob, belief_car.grid[row][col])
+            vals.append([dist(position, checkPointPos), prob])
+            vals2.append([dist(position, checkPointPos), prob])       #storing a copy of vals
+            vals3.append([prob ,dist(position, checkPointPos)])        #to sort by prob
+            vals4.append([prob ,dist(position, checkPointPos)])
+            if prob>threshold:
+                moveForward = False                                 #if all positions are non-ideal, stop. ideal positions have probability of the order 1e-10 or below
+
+        vals.sort()   
+        vals3.sort()                                              #will sort according to the first index - distance from the next goal
+        for val in vals:
+            if val[1]<threshold:
+                goalPos = possible_positions[vals2.index(val)]      #if a safe position is found
+                break
+
+        if goalPos==None:                              
+            goalPos = possible_positions[vals4.index(vals3[0])]     #go to the tile with the least probability of crash
+            
+        goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))
+        
         return goalPos, moveForward
 
     # DO NOT MODIFY THIS METHOD !
