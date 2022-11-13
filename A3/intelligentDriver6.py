@@ -20,10 +20,9 @@ import random
 # -------------
 # Utility class
 class Graph(object):
-    def __init__(self, nodes, edges, special_edges):
+    def __init__(self, nodes, edges):
         self.nodes = nodes
         self.edges = edges
-        self.special_edges = special_edges
 
 # Class: IntelligentDriver
 # ---------------------
@@ -48,7 +47,7 @@ class IntelligentDriver(Junior):
     def createWorldGraph(self):
         nodes = []
         edges = []
-        special_edges = []
+        
         # create self.worldGraph using self.layout
         numRows, numCols = self.layout.getBeliefRows(), self.layout.getBeliefCols()
 
@@ -69,9 +68,9 @@ class IntelligentDriver(Junior):
         for block in blocks:
             row1, col1, row2, col2 = block[1], block[0], block[3], block[2] 
             # some padding to ensure the AutoCar doesn't crash into the blocks due to its size. (optional)
-            #row1, col1, row2, col2 = row1-1, col1-1, row2+1, col2+1
-            blockWidth = col2-col1 
-            blockHeight = row2-row1 
+            row1, col1, row2, col2 = row1-1, col1-1, row2+1, col2+1
+            blockWidth = col2-col1+1
+            blockHeight = row2-row1+1
 
             for i in range(blockHeight):
                 for j in range(blockWidth):
@@ -79,21 +78,31 @@ class IntelligentDriver(Junior):
                     blockTiles.append(blockTile)
 
         ## Remove blockTiles from 'nodes'
+
+        for r in range(numRows):
+            blockTiles.append((r,0))
+            blockTiles.append((r,numCols-1))
+            blockTiles.append((r,1))
+            blockTiles.append((r,numCols-2))
+
+        for c in range(numCols):
+            blockTiles.append((0,c))
+            blockTiles.append((numRows-1,c))
+            blockTiles.append((1,c))
+            blockTiles.append((numRows-2,c))
+
         nodes = [x for x in nodes if x not in blockTiles]
+
         for node in nodes:
             x, y = node[0], node[1]
             adjNodes = [(x, y-1), (x, y+1), (x-1, y), (x+1, y)]
             
             # only keep allowed (within boundary) adjacent nodes
             adjacentNodes = []
-            nextToBlocked = []
             for tile in adjNodes:
                 if tile[0]>=0 and tile[1]>=0 and tile[0]<numRows and tile[1]<numCols:
                     
                     if tile not in blockTiles:
-                        if (tile[0]+1,tile[1]) in blockTiles or (tile[0]-1,tile[1]) in blockTiles or (tile[0],tile[1]+1) in blockTiles or (tile[0],tile[1]-1) in blockTiles:
-                            nextToBlocked.append(tile)
-                        else:
                             adjacentNodes.append(tile)
 
 
@@ -101,11 +110,7 @@ class IntelligentDriver(Junior):
                 edges.append((node, tile))
                 edges.append((tile, node))
                             
-            for tile in nextToBlocked:
-                special_edges.append((node, tile))
-                special_edges.append((tile,node))
-
-        return Graph(nodes, edges, special_edges)
+        return Graph(nodes, edges)
 
     #######################################################################################
     # Function: Get Next Goal Position
@@ -130,7 +135,7 @@ class IntelligentDriver(Junior):
          to find some methods that might help in your implementation. 
         '''
         def dist(pos1, pos2):
-            return (pow(pos1[0]-pos2[0], 2) + pow(pos1[1] - pos2[1], 2))
+            return (pow(util.rowToY(pos1[0])-util.rowToY(pos2[0]), 2) + pow(util.colToX(pos1[1]) - util.colToX(pos2[1]), 2))
 
         def get_probability(belief, row, col):
             #currently only considering 4 directions of movement, up down left and right
@@ -152,12 +157,6 @@ class IntelligentDriver(Junior):
                 if transition in self.transProb.keys():
                     prob+= self.transProb[transition]*belief[row_old][col_old]
             
-            blocks = self.layout.getBlockData()
-            for block in blocks:
-                row1, col1, row2, col2 = block[1], block[0], block[3], block[2]
-                if row>=row1 and row <=row2 and col>=col1 and col<=col2:
-                    prob = 1
-                    print(row, col)
             return prob
 
         def two_step_lookahead(checkPointPos, possible_positions):
@@ -194,12 +193,13 @@ class IntelligentDriver(Junior):
             self.visited_checkPoints.append(checkPointPos)
 
         edges = self.worldGraph.edges
-        special_edges = self.worldGraph.special_edges
 
         #an edge is an integer tuple
         for edge in edges:
             if edge[0]== curr_node:
                 possible_positions.append(edge[1])
+
+        possible_positions.append(currPos)
         
         # if len(possible_positions) == 0:
         #     for edge in special_edges:
@@ -226,35 +226,30 @@ class IntelligentDriver(Junior):
 
         vals.sort()   
         vals2.sort()                                              #will sort according to the first index - distance from the next goal
-        for val in vals:
-            if val[1]<threshold:
-                goalPos = possible_positions[val[2]]      #if a safe position is found
-                break
 
         if curr_node not in self.tiles_encountered:
             self.tiles_encountered.append(curr_node)
         
         if curr_node in self.tiles_encountered:
-            if self.tiles_encountered[-1]!=curr_node:
                 #goalPos = two_step_lookahead(checkPointPos, possible_positions)        #trying to choose by lookahead
-                if True:
-                    n = 0
-                    for val in vals2:
-                        if val[0] < threshold:
-                            n+=1
-                        ind = random.randint(0,n-1)
-                        goalPos = possible_positions[vals[ind][2]]                      #choose a random move
-
+                n = 0
+                for val in vals2:
+                    if val[0] < threshold:
+                        n+=1
+                    ind = random.randint(0,n-1)
+                    goalPos = possible_positions[vals[ind][2]]                      #choose a random move
+        
         if go_to_safe:
             if len(vals2) != 0:                   
                 goalPos = possible_positions[vals2[0][2]]     #go to the tile with the least probability of crash
 
         if goalPos ==None:
             moveForward = False
-            goalPos = (0,0)
+            goalPos = curr_node
         else:    
             goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))
         
+        print(curr_node)
         return goalPos, moveForward
 
     # DO NOT MODIFY THIS METHOD !
