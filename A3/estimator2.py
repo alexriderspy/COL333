@@ -76,7 +76,7 @@ class Estimator(object):
         
         #setting the belief according to exact inference
 
-        alpha = 70
+        alpha = 50
         #beta = 4
         for _ in range(200):
             for row in range(numRows):

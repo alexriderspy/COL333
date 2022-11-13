@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 drive.py -d -k 2 -m -i estimator -l small -a -j
+python3 drive.py -d -k 1 -m -i estimator -l small -a -j

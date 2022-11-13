@@ -114,6 +114,7 @@ class IntelligentDriver(Junior):
     # one can driver around the world, chose the next position.
     #######################################################################################
     def getNextGoalPos(self, beliefOfOtherCars: list, parkedCars:list , chkPtsSoFar: int):
+        self.worldGraph = self.createWorldGraph()
         '''
         Input:
         - beliefOfOtherCars: list of beliefs corresponding to all cars
@@ -251,10 +252,16 @@ class IntelligentDriver(Junior):
 
         if goalPos ==None:
             moveForward = False
-            goalPos = (0,0)
-        else:    
-            goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))
+            goalPos = curr_node
         
+        if goalPos[0] > curr_node[0]:
+            goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0])-Const.BELIEF_TILE_SIZE)
+        if goalPos[1] > curr_node[1]:
+            goalPos = (util.colToX(goalPos[1])-Const.BELIEF_TILE_SIZE, util.rowToY(goalPos[0]))
+        if goalPos[0] < curr_node[0]:
+            goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0])+Const.BELIEF_TILE_SIZE)
+        if goalPos[1] < curr_node[1]:
+            goalPos = (util.colToX(goalPos[1])+Const.BELIEF_TILE_SIZE, util.rowToY(goalPos[0]))
         return goalPos, moveForward
 
     # DO NOT MODIFY THIS METHOD !

@@ -67,14 +67,14 @@ class Estimator(object):
 
         max_iter = 10
 
-        print(particles)
+        #print(particles)
 
         while(iter < max_iter):
 
             new_particles = []
 
             for (x,y) in particles:
-                adj = [(x,y+1),(x,y-1),(x+1,y),(x-1,y),(x+1,y+1),(x-1,y-1),(x+1,y-1),(x-1,y+1)]
+                adj = [(x,y+1),(x,y-1),(x+1,y),(x-1,y),(x+1,y+1),(x-1,y-1),(x+1,y-1),(x-1,y+1),(x,y)]
                 probs = [(trans_prob[(x,y),adj[c]] if ((x,y),adj[c]) in trans_prob else 0,adj[c]) for c in range(len(adj))]
                 probs.sort()
                 #appending only 1 new particle based on direction of max probability
@@ -83,7 +83,7 @@ class Estimator(object):
                 new_particles.append(probs[-2][1])
                 new_particles.append(probs[-3][1])
             
-            print(new_particles)
+            #print(new_particles)
 
             num = len(new_particles)
 
