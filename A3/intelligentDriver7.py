@@ -140,36 +140,51 @@ class IntelligentDriver(Junior):
         f=0
         goalPos = None
 
-        if (row, col-1) in blocks or (row, col-2) in blocks:
+        if (row, col-1) in blocks or (row, col-2) in blocks:            #if wall on left
             print("h4")
-            goalPos = (row-1,col)
-        if (row-1, col) in blocks or (row-2, col) in blocks:
+            goalPos = (row-1,col)                                       #go up
+
+        if (row-1, col) in blocks or (row-2, col) in blocks:            #if wall above
             print("h1")
-            goalPos = (row,col+1)
-        if (row, col+1) in blocks or (row, col+2) in blocks:
+            goalPos = (row,col+1)                                       #go right
+
+        if (row, col+1) in blocks or (row, col+2) in blocks:            #if wall to the right
             print("h2")
-            goalPos = (row+1, col)
-        if (row+1, col) in blocks or (row+2, col) in blocks:
+            goalPos = (row+1, col)                                      #go down
+
+        if (row+1, col) in blocks or (row+2, col) in blocks:            #if wall below
             print("h3")
-            goalPos = (row,col-1)
-        if (row, col-1) in blocks or (row, col-2) in blocks:
-            print("h4")
-            goalPos = (row-1,col)
-        if (row-1, col) in blocks or (row-2, col) in blocks:
-            print("h1")
-            goalPos = (row,col+1)
-        if (row, col+1) in blocks or (row, col+2) in blocks:
-            print("h2")
-            goalPos = (row+1, col)
+            goalPos = (row,col-1)                                       #go left
 
         
-        if goalPos == None:    
+        if goalPos == None:                                             #if aaspaas no walls
+            print(self.dir)
+            goalPos = (row,col-1)                                       #go left
+    
 
-            goalPos = (row,col-1)
-        
-        print(row,col)
-        print(self.dir)
-        print(goalPos)
+        def get_probability(belief, row, col):
+            #currently only considering 4 directions of movement, up down left and right
+            numRows, numCols = self.layout.getBeliefRows(), self.layout.getBeliefCols()
+            row1 = max(row-1, 0)
+            row2 = min(row+1, numRows-1)
+            col1 = max(col-1, 0)
+            col2 = min(col+1, numCols-1)
+            combinations = []
+            combinations.append((row1, col))
+            combinations.append((row2, col))
+            combinations.append((row, col1))
+            combinations.append((row, col2))
+
+            prob = 0
+            for i in range(4):
+                row_old, col_old = combinations[i]
+                transition = ((row_old, col_old), (row, col))
+                if transition in self.transProb.keys():
+                    prob+= self.transProb[transition]*belief[row_old][col_old]
+            return prob
+
+        def dist(pos1, pos2):
+            return (pow(pos1[0]-pos2[0], 2) + pow(pos1[1] - pos2[1], 2))
 
         for checkPoint in self.checkPoints:
             if checkPoint not in self.visitedCheckPoints:
@@ -181,6 +196,36 @@ class IntelligentDriver(Junior):
         
         if row == checkPointPos[0]:
             goalPos = (checkPointPos[0],col+1)
+
+
+        edges = self.worldGraph.edges
+        possible_positions = []
+
+        for edge in edges:
+            if edge[0]== curr_node:
+                possible_positions.append(edge[1])
+
+        vals = []
+        vals2 = []
+        threshold = 0.0000001
+        go_to_safe = False
+        for i in range(len(possible_positions)):
+            position = possible_positions[i]
+            row, col = position
+            prob = 0
+            for belief_car in beliefOfOtherCars:
+                prob = max(prob, get_probability(belief_car.grid, row, col))
+            
+            distance = dist(position, checkPointPos)
+            vals.append([distance, prob,i])
+            vals2.append([prob , distance,i])        #to sort by prob
+            if prob>threshold:
+                go_to_safe = True                                  #if all positions are non-ideal, stop. ideal positions have probability of the order 1e-10 or below
+
+        vals2.sort()
+        if go_to_safe:
+            if len(vals2) != 0:                   
+                goalPos = possible_positions[vals2[0][2]]     #go to the tile with the least probability of crash
         
         goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))
 
