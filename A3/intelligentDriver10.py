@@ -150,49 +150,6 @@ class IntelligentDriver(Junior):
         def dist(pos1, pos2):
             return (pow(pos1[0]-pos2[0], 2) + pow(pos1[1] - pos2[1], 2))
 
-        self.worldGraph = self.createWorldGraph()
-        goalPos = (0,0)
-        moveForward = True
-
-        currPos = self.getPos() # the current 2D location of the AutoCar (refer util.py to convert it to tile (or grid cell) coordinate)
-        # BEGIN_YOUR_CODE 
-
-        row = util.yToRow(currPos[1])
-        col = util.xToCol(currPos[0])
-
-        curr_node = (row,col)
-        goalPos = curr_node
-
-        for checkPoint in self.checkPoints:
-            if checkPoint not in self.visitedCheckPoints:
-                checkPointPos = checkPoint # next tile
-                break 
-
-        if curr_node == checkPointPos:
-            self.visitedCheckPoints.append(curr_node)
-
-
-        goalPos = checkPointPos
-        path_to_goal = self.bfs(curr_node, goalPos)
-
-        if len(path_to_goal)>1:
-            goalPos = path_to_goal[1]
-            """self.lastpath = path_to_goal
-        else:
-            #the case where the autocar deviates from its path because of the stdcar
-            #find the nearest node in the last path calculated
-            path = self.lastpath
-            min_dist = 10000000
-            min_node = None
-            for node in path:
-                d = dist(node, curr_node)
-                if d<min_dist:
-                    min_dist = d
-                    min_node = node
-            if len(path)==0:
-                goalPos = checkPointPos
-            else:
-                goalPos = min_node"""
         def get_probability(belief, row, col):
             #currently only considering 4 directions of movement, up down left and right
             numRows, numCols = self.layout.getBeliefRows(), self.layout.getBeliefCols()
@@ -214,8 +171,18 @@ class IntelligentDriver(Junior):
                     prob+= self.transProb[transition]*belief[row_old][col_old]
             return prob
 
-        def dist(pos1, pos2):
-            return (pow(pos1[0]-pos2[0], 2) + pow(pos1[1] - pos2[1], 2))
+        self.worldGraph = self.createWorldGraph()
+        goalPos = (0, 0) # next tile 
+        moveForward = True
+
+        currPos = self.getPos() # the current 2D location of the AutoCar (refer util.py to convert it to tile (or grid cell) coordinate)
+        # BEGIN_YOUR_CODE 
+
+        row = util.yToRow(currPos[1])
+        col = util.xToCol(currPos[0])
+
+        curr_node = (row,col)
+        goalPos = curr_node
 
         for checkPoint in self.checkPoints:
             if checkPoint not in self.visitedCheckPoints:
@@ -224,41 +191,66 @@ class IntelligentDriver(Junior):
 
         if curr_node == checkPointPos:
             self.visitedCheckPoints.append(curr_node)
-        
-        if row == checkPointPos[0]:
-            goalPos = (checkPointPos[0],col+1)
 
-
-        edges = self.worldGraph.edges
         possible_positions = []
 
-        for edge in edges:
-            if edge[0]== curr_node:
-                possible_positions.append(edge[1])
+        edges = self.worldGraph.edges
+
+        if curr_node in edges:
+                possible_positions = edges[curr_node]
 
         vals = []
         vals2 = []
-        threshold = 0.0000001
+        threshold = 0.00001
         go_to_safe = False
+        print('prob')
         for i in range(len(possible_positions)):
             position = possible_positions[i]
             row, col = position
             prob = 0
             for belief_car in beliefOfOtherCars:
                 prob = max(prob, get_probability(belief_car.grid, row, col))
-            
+            print(prob)
             distance = dist(position, checkPointPos)
             vals.append([distance, prob,i])
             vals2.append([prob , distance,i])        #to sort by prob
             if prob>threshold:
                 go_to_safe = True                                  #if all positions are non-ideal, stop. ideal positions have probability of the order 1e-10 or below
+            
 
+        vals.sort()   
         vals2.sort()
+
+
+        goalPos = checkPointPos
+        path_to_goal = self.bfs(curr_node, goalPos)
+
+        if len(path_to_goal)>1:
+            goalPos = path_to_goal[1]
+            self.lastpath = path_to_goal
+        else:
+            #the case where the autocar deviates from its path because of the stdcar
+            #find the nearest node in the last path calculated
+            path = self.lastpath
+            min_dist = 10000000
+            min_node = None
+            for node in path:
+                d = dist(node, curr_node)
+                if d<min_dist:
+                    min_dist = d
+                    min_node = node
+            #print(path)
+            """if len(path)==0:
+                goalPos = checkPointPos
+            else:
+                goalPos = min_node"""
+
         if go_to_safe:
+            print('danger')
             if len(vals2) != 0:                   
                 goalPos = possible_positions[vals2[0][2]]     #go to the tile with the least probability of crash
         
-        goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))
+        goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))*10
         # END_YOUR_CODE
         return goalPos, moveForward
 
