@@ -5,7 +5,7 @@ from .car.junior import Junior
 from engine.vector import Vec2d
 from autoDriver import AutoDriver
 from engine.model.block import Block
-from intelligentDriver8 import IntelligentDriver
+from intelligentDriver10 import IntelligentDriver
 from engine.model.agentCommunication import AgentCommunication
 
 
