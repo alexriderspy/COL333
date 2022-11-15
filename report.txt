@@ -1,0 +1,10 @@
+Sreemanti Dey 2020CS10393 Aryan Dua 2020CS50475
+
+Part a: we have done estimation using particle filtering. The algorithm followed involves 3 steps: 
+Step 1: Generate new set of points from old points based on transition probability.
+Step 2: Reweighed the samples based on weights. 
+Step 3: Resampled N points based on weights.
+
+Using these, we have got almost exact belief values for all the cars.
+
+Part b: we have performed bfs to find the shortest path to the goal and we follow that path. And in this process, if some car comes in the way, which we determine based on the belief grid then we find the cell around it, which is free of any cars and move to that cell and if there is car in every direction, then we set moveForward to False.
