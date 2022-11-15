@@ -52,20 +52,12 @@ class IntelligentDriver(Junior):
         # NODES #
         ## each tile represents a node
         nodes = [(x, y) for x, y in itertools.product(range(numRows), range(numCols))]
-        
-        # EDGES #
-        ## We create an edge between adjacent nodes (nodes at a distance of 1 tile)
-        ## avoid the tiles representing walls or blocks#
-        ## YOU MAY WANT DIFFERENT NODE CONNECTIONS FOR YOUR OWN IMPLEMENTATION,
-        ## FEEL FREE TO MODIFY THE EDGES ACCORDINGLY.
-
-        ## Get the tiles corresponding to the blocks (or obstacles):
         blocks = self.layout.getBlockData()
         blockTiles = []
         for block in blocks:
             row1, col1, row2, col2 = block[1], block[0], block[3], block[2] 
             # some padding to ensure the AutoCar doesn't crash into the blocks due to its size. (optional)
-            row1, col1, row2, col2 = row1-1, col1-1, row2+1, col2+1
+            #row1, col1, row2, col2 = row1-1, col1-1, row2+1, col2+1
             blockWidth = col2-col1 
             blockHeight = row2-row1 
 
@@ -75,6 +67,7 @@ class IntelligentDriver(Junior):
                     blockTiles.append(blockTile)
 
         ## Remove blockTiles from 'nodes'
+        self.blockTiles = blockTiles
         nodes = [x for x in nodes if x not in blockTiles]
 
         for node in nodes:
@@ -107,7 +100,36 @@ class IntelligentDriver(Junior):
     # one can driver around the world, chose the next position.
     #######################################################################################
 
-    def bfs(self, start, end):
+    
+        
+    def bfs(self, start, end, margin):
+        def is_neighbour(next_node):
+            blocks = self.blockTiles
+            return (next_node[0], next_node[1]+1) in blocks or (next_node[0], next_node[1]-1) in blocks or (next_node[0]-1, next_node[1]) in blocks or (next_node[0]+1, next_node[1]) in blocks
+
+        def second_neighbour(next_node):
+            left = is_neighbour((next_node[0], next_node[1]-1))
+            right = is_neighbour((next_node[0], next_node[1]+1))
+            down = is_neighbour((next_node[0]+1, next_node[1]))
+            up = is_neighbour((next_node[0]-1, next_node[1]))
+
+            return left or right or down or up
+
+        def update(margin, visited, next_node, q, parent, node):
+            first_neighbour = is_neighbour(next_node)
+            sec_neighbour = second_neighbour(next_node)
+            neighbour_walls = first_neighbour
+
+            if margin==2 and not sec_neighbour:
+                neighbour_walls = neighbour_walls or sec_neighbour
+                
+
+            if visited[next_node[0]][next_node[1]] == False and not neighbour_walls:
+                q.append(next_node)
+                visited[next_node[0]][next_node[1]] = True
+                parent[next_node[0]][next_node[1]] = node
+            return visited, parent, q
+
         m = self.layout.getBeliefRows()
         n = self.layout.getBeliefCols()
         parent = [[None for _ in range(n)] for _ in range(m)]
@@ -119,10 +141,7 @@ class IntelligentDriver(Junior):
             node = q.pop(0)
             if node in edges:
                 for next_node in edges[node]:
-                    if visited[next_node[0]][next_node[1]] == False:
-                        q.append(next_node)
-                        visited[next_node[0]][next_node[1]] = True
-                        parent[next_node[0]][next_node[1]] = node
+                    visited, parent, q = update(margin, visited, next_node, q, parent, node)
         path = []
         cur_node = end
         while cur_node:
@@ -130,6 +149,8 @@ class IntelligentDriver(Junior):
             cur_node = parent[cur_node[0]][cur_node[1]]
         path.reverse()
         return path
+
+    
 
     def getNextGoalPos(self, beliefOfOtherCars: list, parkedCars:list , chkPtsSoFar: int):
         '''
@@ -150,8 +171,34 @@ class IntelligentDriver(Junior):
         def dist(pos1, pos2):
             return (pow(pos1[0]-pos2[0], 2) + pow(pos1[1] - pos2[1], 2))
 
+        def get_probability(belief, row, col):
+            #currently only considering 4 directions of movement, up down left and right
+            numRows, numCols = self.layout.getBeliefRows(), self.layout.getBeliefCols()
+            row1 = max(row-1, 0)
+            row2 = min(row+1, numRows-1)
+            col1 = max(col-1, 0)
+            col2 = min(col+1, numCols-1)
+            combinations = []
+            combinations.append((row1, col))
+            combinations.append((row2, col))
+            combinations.append((row, col1))
+            combinations.append((row, col2))
+
+            prob = 0
+            for i in range(4):
+                row_old, col_old = combinations[i]
+                transition = ((row_old, col_old), (row, col))
+                if transition in self.transProb.keys():
+                    prob+= self.transProb[transition]*belief[row_old][col_old]
+
+            blocks = set(self.blockTiles)
+            if (row, col) in blocks:
+                prob = 1
+            
+            return prob
+
         self.worldGraph = self.createWorldGraph()
-        goalPos = (0, 0) # next tile 
+        goalPos = None # next tile 
         moveForward = True
 
         currPos = self.getPos() # the current 2D location of the AutoCar (refer util.py to convert it to tile (or grid cell) coordinate)
@@ -171,30 +218,78 @@ class IntelligentDriver(Junior):
         if curr_node == checkPointPos:
             self.visitedCheckPoints.append(curr_node)
 
+        possible_positions = []
+
+        edges = self.worldGraph.edges
+
+        if curr_node in edges:
+            possible_positions = edges[curr_node]
+        possible_positions.append(curr_node)
+
+        vals2 = []
+        threshold = 0.02
+        go_to_safe = False
+        for i in range(len(possible_positions)):
+            position = possible_positions[i]
+            row, col = position
+            prob = 0
+            for belief_car in beliefOfOtherCars:
+                prob = max(prob, get_probability(belief_car.grid, row, col))
+            if prob==1 and position==curr_node:
+                continue
+            distance = dist(position, checkPointPos)
+            vals2.append([prob , distance,i])        #to sort by prob
+            if prob>threshold:
+                go_to_safe = True                                  #if all positions are non-ideal, stop. ideal positions have probability of the order 1e-10 or below
+              
+        vals2.sort()
 
         goalPos = checkPointPos
-        path_to_goal = self.bfs(curr_node, goalPos)
+        path_to_goal = self.bfs(curr_node, goalPos, 2)
 
         if len(path_to_goal)>1:
             goalPos = path_to_goal[1]
-            """self.lastpath = path_to_goal
+            self.lastpath = path_to_goal
         else:
             #the case where the autocar deviates from its path because of the stdcar
             #find the nearest node in the last path calculated
-            path = self.lastpath
-            min_dist = 10000000
-            min_node = None
-            for node in path:
-                d = dist(node, curr_node)
-                if d<min_dist:
-                    min_dist = d
-                    min_node = node
-            if len(path)==0:
-                goalPos = checkPointPos
+            path_to_goal = self.bfs(curr_node, goalPos, 1)
+            if len(path_to_goal)>1:
+                goalPos = path_to_goal[1]
+                self.lastpath = path_to_goal
             else:
-                goalPos = min_node"""
+                path = self.lastpath
+                min_dist = 10000000
+                min_node = None
+                for node in path:
+                    d = dist(node, curr_node)
+                    if d<min_dist:
+                        min_dist = d
+                        min_node = node
+                if len(path)==0:
+                    goalPos = checkPointPos
+                else:
+                    goalPos = min_node
+
+        found = False
+        if go_to_safe:
+            for val in vals2:                 
+                gp = possible_positions[val[2]]     #go to the tile with the least probability of crash, in the 3 front facing directions
+                gp = (util.colToX(gp[1]), util.rowToY(gp[0]))
+                vectorToGoal = gp - self.pos
+                wheelAngle = -vectorToGoal.get_angle_between(self.dir)
+                if abs(wheelAngle)<90 and val[0]<threshold:
+                    goalPos = possible_positions[val[2]]
+                    found = True
+                    if goalPos==curr_node:
+                        moveForward = False
+                    break
+            if found==False:              
+                goalPos = possible_positions[vals2[0][2]]     #go to the tile with the least probability of crash
+                if gp==curr_node:
+                    moveForward = False
         
-        goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))*10
+        goalPos = (util.colToX(goalPos[1]), util.rowToY(goalPos[0]))
         # END_YOUR_CODE
         return goalPos, moveForward
 
